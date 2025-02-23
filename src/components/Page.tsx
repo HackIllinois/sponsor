@@ -27,7 +27,7 @@ export function Page({pageContent, showNav}: PageProps) {
         bg={"brand.100"}
         overflow="hidden" height="100%"
     >
-        <GridItem area={'header'} pl="10px" pt="10px">
+        <GridItem area={'header'} pl="10px" pt="10px" zIndex={999} height={"fit-content"}>
             <NavBar />
         </GridItem>
         {/* {showNav ? 

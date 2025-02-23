@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Button, ChakraProvider, Flex, Icon, Image, IconButton, Text, HStack, Menu, MenuButton, Avatar, MenuList, MenuItem, useToast, useColorMode, useColorModeValue, Input, Center, ButtonGroup, useMediaQuery } from '@chakra-ui/react';
+import { Box, Button, ChakraProvider, Flex, Icon, IconButton, Text, HStack, Menu, MenuButton, Avatar, MenuList, MenuItem, useToast, useColorModeValue, Input, Center, ButtonGroup, useMediaQuery } from '@chakra-ui/react';
 import ResumeGrid from './ResumeGrid';
 import ResumeList from './ResumeList';
 import MultiSelectDropdown from "../components/MultiSelectDropdown";
@@ -13,7 +13,6 @@ import axios from 'axios';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { Config } from "../config";
-import { FaMoon, FaSun } from 'react-icons/fa';
 
 interface Resume {
     id: string;
@@ -43,8 +42,6 @@ interface ResumeIDs {
 export function ResumeBook() {
 
     const toast = useToast();
-    const { toggleColorMode } = useColorMode();
-        
     // const resumes: Resume[] = [
         // { id: '1', name: 'Finn the Human', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Professional Furry', graduationYear: '2022'},
         // { id: '2', name: 'Jake the Dog', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Backend', graduationYear: '2023'},
@@ -432,56 +429,34 @@ export function ResumeBook() {
                     display={{ md: 'none' }}
                     onClick={isOpen ? onClose : onOpen}
                 /> */}
-                <HStack spacing={8} alignItems={'center'}>
-                    <Flex align="center" mr={2} maxWidth={50}>
-                    <Image
-                        src="/2024_rp_logo.svg"
-                        minHeight={50}
-                        maxH="100%"
-                        _hover={{ filter: "brightness(30%)", transition: "filter 0.2s ease-in-out", cursor: "pointer" }}
-                        onClick={() => { window.location.href = "/" }}
-                    />
-                    </Flex>
+                <HStack spacing={8} alignItems={'center'} pl={14}>
+                    <Text color='darkslategray' fontFamily={'Nunito'} textOverflow={"none"} fontSize="24px" >Resume Book</Text>
                 </HStack>
-                <Text color='white' fontFamily={'Nunito'}>Resume Book</Text>
                 <Flex alignItems={'center'} zIndex="20">
-                    <ButtonGroup isAttached border={'1px solid darkslategray'} borderRadius={'7px'} variant="outline">
+                    <ButtonGroup isAttached border={'1px solid lightgray'} borderRadius={'7px'} 
+                        marginX={4} variant="outline">
                         <IconButton
-                            color='white'
+                            color='gray'
                             aria-label='List View'
                             icon={<Icon as={BsList} boxSize={6} />}
                             onClick={() => setShowList(true)}
                             _hover={{ border:'1px solid gray'}}
                             mr={2}
-                            backgroundColor='transparent'//gray.'+(parseInt(viewColor)-100) : 'gray.'+viewColor}
-                            border={showList ? '1px solid white' : '1px solid transparent'}
+                            backgroundColor={showList ? 'gray.200': 'white'}
+                            border={showList ? '1px solid gray.200' : '1px solid transparent'}
                             transition="border-color 0.3s ease"
                         />
                         <IconButton
-                            color='white'
+                            color='gray'
                             aria-label='Grid View'
                             icon={<Icon as={BsGrid} boxSize={6} />}
                             onClick={() => setShowList(false)}
                             _hover={{ border:'1px solid gray'}}
-                            backgroundColor='transparent'//{showList ? 'gray.'+viewColor : 'gray.'+(parseInt(viewColor)-100)}
-                            border={showList ? '1px solid transparent' : '1px solid white'}
+                            backgroundColor={showList ? 'white' : 'gray.200'}
+                            border={showList ? '1px solid transparent' : '1px solid gray.200'}
                             transition="border-color 0.3s ease"
                         />
                     </ButtonGroup>
-                    <IconButton
-                        isRound={true}
-                        fontSize='26px'
-                        marginX={4}
-                        aria-label="Toggle Light/Dark Mode"
-                        icon={useColorModeValue(<FaMoon />, <FaSun />)}
-                        onClick={toggleColorMode}
-                        variant="link"
-                        _hover={{ color:'gray.500'}}
-                        bg='#0F1130'
-                        color='#F7FAFC'
-                        size="sm"
-                        transition="color 0.3s ease, background-color 0.3s ease"
-                    />
                     <Menu>
                     <MenuButton
                         as={Button}
@@ -544,7 +519,7 @@ export function ResumeBook() {
                     </Flex>
                     <Flex p={2}>
 
-                        <Button onClick={selectAllResumes} mr={2} backgroundColor={selectedResumes.length === filteredResumes.length ? 'salmon' : 'blue.300'} color={'white'} border='1px solid transparent' _hover={{ border:'1px solid black', backgroundColor: `${selectedResumes.length === filteredResumes.length ? 'red.200' : 'blue.200'}`, color: 'black'}} transition="border background-color color 0.3s ease">
+                        <Button onClick={selectAllResumes} mr={2} backgroundColor={selectedResumes.length === filteredResumes.length ? '#fb923c' : 'blue.300'} color={'white'} border='1px solid transparent' _hover={{ border:'1px solid black', backgroundColor: `${selectedResumes.length === filteredResumes.length ? 'red.200' : 'blue.200'}`, color: 'black'}} transition="border background-color color 0.3s ease">
                             {isMobile ? (
                                 selectedResumes.length === filteredResumes.length ? <TiDocumentDelete/> : <BiSelectMultiple/>
                             ) : (
@@ -587,7 +562,7 @@ export function ResumeBook() {
                 </Center>
 
 
-                <Text fontSize="sm" textAlign="center" color="gray.500" mt={4}>© 2024 Reflections | Projections</Text>
+                <Text fontSize="sm" textAlign="center" color="gray.500" mt={4}>© 2025 HackIllinois</Text>
 
 
             </Box>
