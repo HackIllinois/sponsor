@@ -55,7 +55,7 @@ export function Home() {
                 <Spacer />
                 <Stack direction={isMobile ? 'column' : 'row'} justifyContent="center" spacing={isMobile ? '30px' : "220px"} alignItems='center' mt='10px' >
                     <Button w={isMobile ? "300px" : "450px"} h={isMobile ? "75px" : "125px"} zIndex={"1"} borderRadius={"2rem"} _hover={{ bg: "#68C8BF" }} as="a" href="/sponsors.pdf"><Text fontSize={isSmall ? "22" : "30"}>Sponsorship Packet</Text></Button>
-                    {/* <Button w={isMobile ? "300px" : "450px"} h={isMobile ? "75px" : "125px"} zIndex={"1"} borderRadius={"2rem"} _hover={{ bg: "#68C8BF" }} as="a" href="/resume-book"><Text fontSize={isSmall ? "22" : "30"}>Resume Book</Text></Button> */}
+                    {/* <Button w={isMobile ? "300px" : "450px"} h={isMobile ? "75px" : "125px"} zIndex={"1"} borderRadius={"2rem"} _hover={{ bg: "#68C8BF" }} as="a" href="/login"><Text fontSize={isSmall ? "22" : "30"}>Resume Book</Text></Button> */}
                 </Stack>
             </Flex>
         </Box>
