@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Button, ChakraProvider, Flex, Icon, Image, IconButton, Text, HStack, Menu, MenuButton, Avatar, MenuList, MenuItem, useToast, useColorMode, useColorModeValue, Input, Center, ButtonGroup, useMediaQuery } from '@chakra-ui/react';
+import { Box, Button, ChakraProvider, Flex, Icon, IconButton, Text, HStack, Menu, MenuButton, Avatar, MenuList, MenuItem, useToast, useColorModeValue, Input, Center, ButtonGroup, useMediaQuery } from '@chakra-ui/react';
 import ResumeGrid from './ResumeGrid';
 import ResumeList from './ResumeList';
 import MultiSelectDropdown from "../components/MultiSelectDropdown";
@@ -13,7 +13,6 @@ import axios from 'axios';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { Config } from "../config";
-import { FaMoon, FaSun } from 'react-icons/fa';
 
 interface Resume {
     id: string;
