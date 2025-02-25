@@ -374,6 +374,11 @@ export function ResumeBook() {
             },
         );
         
+        if (!response.ok) {
+            localStorage.removeItem("jwt");
+            showToast(`Error: Failed to fetch resumes - please refresh the page`);
+        }
+
         const { pageCount } = await response.json();
         setPageSize(pageCount);
         if (page > pageCount) {
@@ -392,7 +397,8 @@ export function ResumeBook() {
         );
 
         if (!pageResponse.ok) {
-            showToast(`Error: Failed to fetch resumes - please sign in again`);
+            localStorage.removeItem("jwt");
+            showToast(`Error: Failed to fetch resumes - please refresh the page`);
         }
 
         const resumes = await pageResponse.json();
