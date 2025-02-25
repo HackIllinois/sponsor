@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Grid, GridItem, VStack, Text } from '@chakra-ui/react';
+import { Box, Grid, GridItem, VStack, Text, Button } from '@chakra-ui/react';
 import { MdOpenInNew } from 'react-icons/md';
 import { Resume } from './ResumeBook';
 
@@ -106,12 +106,17 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
             )}
             <GridItem zIndex='5'>
               <VStack spacing={2}>
-                <Text
+                <Button
                   color='blue.500'
+                  backgroundColor='gray.200'
                   size="md"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openResume(resume.userId);
+                  }}
                 >
                   {isLargerThan700 ? 'Open Resume' : <MdOpenInNew />}
-                </Text>
+                </Button>
               </VStack>
             </GridItem>
           </Grid>
