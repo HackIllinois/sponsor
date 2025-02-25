@@ -4,7 +4,6 @@ export const majors = [
 	"Computer Science & Animal Sciences",
 	"Computer Science & Anthropology",
 	"Computer Science & Astronomy",
-	"Computer Science & Bioengineering",
 	"Computer Science & Chemistry",
 	"Computer Science & Crop Sciences",
 	"Computer Science & Economics",
@@ -12,7 +11,6 @@ export const majors = [
 	"Computer Science & Geography & Geographic Information Science",
 	"Computer Science & Linguistics",
 	"Computer Science & Music",
-	"Computer Science & Physics",
 	"Computer Science & Philosophy",
 	"Computer Engineering",
 	"Electrical Engineering",
@@ -171,6 +169,5 @@ export const majors = [
 	"Technical Systems Management",
 	"Theatre Studies",
 	"Undeclared",
-	"Urban Studies and Planning",
-	"Other"
+	"Urban Studies and Planning"
 ];

@@ -1,17 +1,7 @@
-import React, { useState } from 'react';
-import { Box, Grid, GridItem, Checkbox, VStack, Text, Image, Button, SimpleGrid, Center, Tooltip, HStack } from '@chakra-ui/react';
-import { MdOpenInNew, MdList } from 'react-icons/md';
-import { Config } from '../config';
-
-interface Resume {
-    id: string;
-    name: string;
-    major: string;
-    degree: string;
-    graduationYear: string;
-    jobInterest: Array<string>;
-    portfolios?: Array<string>;
-}
+import React from 'react';
+import { Box, Grid, GridItem, VStack, Text } from '@chakra-ui/react';
+import { MdOpenInNew } from 'react-icons/md';
+import { Resume } from './ResumeBook';
 
 interface ColumnWidths {
   checkbox: number;
@@ -39,20 +29,19 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
   isSelected,
   columnWidths,
   isLargerThan700,
-  toggleResume,
   openResume,
   baseColor,
   bgColor,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  // const [isExpanded, setIsExpanded] = useState(false);
 
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
+  // const toggleExpand = () => {
+  //   setIsExpanded(!isExpanded);
+  // };
 
   return (
     <Box 
-          key={resume.id}
+          key={resume.userId}
           borderWidth='2px'
           padding='10px'
           background={isSelected ? 'blue.' + baseColor : bgColor}
@@ -64,33 +53,36 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
           cursor="pointer"
           _hover={{ background: isSelected ? 'blue.' + (parseInt(baseColor) + 100) : 'gray.' + (parseInt(baseColor) > 500 ? parseInt(baseColor) - 100 : parseInt(baseColor) + 100), boxShadow: 'lg' }}
           borderColor={isSelected ? 'blue.500' : 'gray.' + baseColor}
-          onClick={() => toggleResume(resume.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            openResume(resume.userId);
+          }}
           transition="all 0.2s ease"
         >
           <Grid templateColumns={
               isLargerThan700
-              ? `${columnWidths.checkbox}px ${columnWidths.name}px ${columnWidths.degree}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
-              : `${columnWidths.checkbox}px ${columnWidths.data}px ${columnWidths.actions}px`
+              ? `${columnWidths.name}px ${columnWidths.degree}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
+              : `${columnWidths.data}px ${columnWidths.actions}px`
           } gap={4} alignItems="center">
-            <GridItem>
+            {/* <GridItem>
               <HStack>
                 <Checkbox 
                   size="lg"
                   isChecked={isSelected}
-                  onChange={() => toggleResume(resume.id)}
+                  onChange={() => toggleResume(resume.userId)}
                   borderColor={'gray.400'}
                 />
-                {Config.STAFF_UIDs.includes(resume.id) && (
+                {/* {Config.STAFF_UIDs.includes(resume.id) && (
                   <Tooltip label="Staff Member" fontSize="md">
                     <Image src="/2024_rp_logo.svg" width='20px' height='20px' />
                   </Tooltip>
-                )}
+                )} }
               </HStack>
-            </GridItem>
+            </GridItem> */}
             {isLargerThan700 ? (
               <>
                 <GridItem>
-                  <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
+                  <Text fontWeight="bold" fontSize="lg">{resume.legalName}</Text>
                 </GridItem>
                 <GridItem>
                   <Text color="gray.500" fontSize="sm">{resume.degree}</Text>
@@ -99,52 +91,33 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
                   <Text color="gray.500" fontSize="sm">{resume.major}</Text>
                 </GridItem>
                 <GridItem>
-                  <Text color="gray.500" fontSize="sm">{resume.graduationYear}</Text>
+                  <Text color="gray.500" fontSize="sm">{resume.gradYear.toString()}</Text>
                 </GridItem>
               </>
             ) : (
               <GridItem>
                 <VStack align="start" spacing={1}>
-                  <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
+                  <Text fontWeight="bold" fontSize="lg">{resume.legalName}</Text>
                   <Text color="gray.500" fontSize="sm">{resume.degree}</Text>
                   <Text color="gray.500" fontSize="sm">{resume.major}</Text>
-                  <Text color="gray.500" fontSize="sm">{resume.graduationYear}</Text>
+                  <Text color="gray.500" fontSize="sm">{resume.gradYear.toString()}</Text>
                 </VStack>
               </GridItem>
             )}
             <GridItem zIndex='5'>
               <VStack spacing={2}>
-                <Button
-                  backgroundColor='blue.500'
-                  color='white'
+                <Text
+                  color='blue.500'
                   size="md"
-                  _hover={{ color: 'black', backgroundColor: 'blue.300' }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openResume(resume.id);
-                  }}
                 >
                   {isLargerThan700 ? 'Open Resume' : <MdOpenInNew />}
-                </Button>
-                <Button
-                  isDisabled={resume.portfolios?.length === 0}
-                  backgroundColor='green.500'
-                  color='white'
-                  size="md"
-                  _hover={{ color: 'black', backgroundColor: 'green.300' }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleExpand(); // Toggle the expanded state
-                  }}
-                >
-                  {isLargerThan700 ? 'Portfolio Links' : <MdList />}
-                </Button>
+                </Text>
               </VStack>
             </GridItem>
           </Grid>
           
           {/* Conditionally render additional buttons if expanded */}
-          {isExpanded && (
+          {/* {isExpanded && (
             <Center>
               <SimpleGrid
                 columns={{ base: 2, md: 3, lg: 5 }} // Use 2 columns on small screens, up to 5 columns on large screens
@@ -178,7 +151,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
                 })}
               </SimpleGrid>
             </Center>
-          )}
+          )} */}
         </Box>
   );
 };

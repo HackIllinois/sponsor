@@ -1,18 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Box, Text, VStack, Grid, GridItem, useMediaQuery, useToast } from '@chakra-ui/react';
 import ResumeListBox from './ResumeListBox';
-import axios from 'axios';
-import { Config } from '../config';
-
-interface Resume {
-  id: string;
-  name: string;
-  major: string;
-  degree: string;
-  graduationYear: string;
-  jobInterest: Array<string>;
-  portfolios?: Array<string>;
-}
+import { Resume } from './ResumeBook';
 
 interface ResumeListProps {
   resumes: Resume[];
@@ -250,21 +239,20 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
       });
   }
 
-  const openResume = (id: string) => {
-    const jwt = localStorage.getItem('jwt');
-    axios.get(Config.API_BASE_URL + "/s3/download/user/"+ id, {
-        headers: {
-            Authorization: jwt
-        }
-    })
-    .then(function (response) {
-        // console.log(response.data.url);
-        window.open(response.data.url, '_blank');
-    })
-    .catch(function (error) {
-        console.log(error);
-        showToast("Failed to open resume. Please try again later.");
-    })
+  const openResume = async (id: string) => {
+    const jwt = localStorage.getItem('jwt') || "";
+    const response = await fetch(`https://adonix.hackillinois.org/resume/download/${id}`, {
+      headers: {
+        Authorization: jwt
+      }
+    });
+
+    if (!response.ok) {
+      showToast("Failed to open resume. Please try again later.");
+    }
+
+    const { url } = await response.json();
+    window.open(url, '_blank');
   };
 
   return (
@@ -283,12 +271,12 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
       >
         <Grid templateColumns={
             isLargerThan700
-                ? `${columnWidths.checkbox}px ${columnWidths.name}px ${columnWidths.degree}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
-                : `${columnWidths.checkbox}px ${columnWidths.data}px ${columnWidths.actions}px`
+                ? `${columnWidths.name}px ${columnWidths.degree}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
+                : `${columnWidths.data}px ${columnWidths.actions}px`
             } gap={4} alignItems="center">
-            <GridItem>
+            {/* <GridItem>
                 <Text fontWeight="bold">Select</Text>
-            </GridItem>
+            </GridItem> */}
             {isLargerThan700 ? (
                 <>
                 <GridItem>
@@ -333,7 +321,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
 
     {resumes.map((resume) => {
         return (
-            <ResumeListBox resume={resume} key={resume.id} isSelected={selectedResumes.includes(resume.id)} columnWidths={columnWidths} isLargerThan700={isLargerThan700} toggleResume={toggleResume} openResume={openResume} baseColor={baseColor} bgColor={bgColor} />
+            <ResumeListBox resume={resume} key={resume.userId} isSelected={selectedResumes.includes(resume.userId)} columnWidths={columnWidths} isLargerThan700={isLargerThan700} toggleResume={toggleResume} openResume={openResume} baseColor={baseColor} bgColor={bgColor} />
         );
         // const isSelected = selectedResumes.includes(resume.id);
         // const [isExpanded, setIsExpanded] = useState(false);

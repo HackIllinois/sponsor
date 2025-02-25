@@ -21,7 +21,7 @@ export function Page({pageContent, showNav}: PageProps) {
         gridTemplateColumns={showNav ? '0px 1fr' : '1fr'}
         h='100%'
         minH={"100vh"}
-        maxH={"100vh"}
+        // maxH={"100vh"}
         gap='1'
         fontWeight='bold'
         bg={"brand.100"}

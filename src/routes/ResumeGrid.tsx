@@ -1,18 +1,7 @@
 import React from 'react';
 import { SimpleGrid, Box, useToast } from '@chakra-ui/react';
 import ResumeGridBox from './ResumeGridBox';
-import axios from 'axios';
-import { Config } from '../config';
-
-interface Resume {
-    id: string;
-    name: string;
-    major: string;
-    degree: string;
-    graduationYear: string;
-    jobInterest: Array<string>;
-    portfolios?: Array<string>;
-}
+import { Resume } from './ResumeBook';
 
 interface ResumeGridProps {
   resumes: Resume[];
@@ -35,21 +24,20 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
       });
   }
 
-  const openResume = (id: string) => {
-    const jwt = localStorage.getItem('jwt');
-    axios.get(Config.API_BASE_URL + "/s3/download/user/"+ id, {
-        headers: {
-            Authorization: jwt
-        }
-    })
-    .then(function (response) {
-        window.open(response.data.url, '_blank');
-        // console.log(response.data.url);
-    })
-    .catch(function (error) {
-        console.log(error);
-        showToast("Failed to open resume. Please try again later.");
-    })
+  const openResume = async (id: string) => {
+    const jwt = localStorage.getItem('jwt') || "";
+    const response = await fetch(`https://adonix.hackillinois.org/resume/download/${id}`, {
+      headers: {
+        Authorization: jwt
+      }
+    });
+
+    if (!response.ok) {
+      showToast("Failed to open resume. Please try again later.");
+    }
+
+    const { url } = await response.json();
+    window.open(url, '_blank');
   };
 
   return (
@@ -57,7 +45,7 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
       {/* <Text fontSize="2xl" mb="4">Resumes</Text> */}
       <SimpleGrid columns={{ sm: 2, md: 4, lg: 6 }} spacing="6">
         {resumes.map((resume) => {
-            const isSelected = selectedResumes.includes(resume.id);
+            const isSelected = selectedResumes.includes(resume.userId);
             return (
                 // <Box 
                 //     key={resume.id} 
@@ -95,7 +83,7 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
                 //         </VStack>
                 //     </Box>
                 // </Box>
-                <ResumeGridBox resume={resume} key={resume.id} isSelected={isSelected} toggleResume={toggleResume} openResume={openResume} baseColor={baseColor} bgColor={bgColor} />
+                <ResumeGridBox resume={resume} key={resume.userId} isSelected={isSelected} toggleResume={toggleResume} openResume={openResume} baseColor={baseColor} bgColor={bgColor} />
             );
         })}
       </SimpleGrid>

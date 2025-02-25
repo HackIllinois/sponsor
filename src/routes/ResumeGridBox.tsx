@@ -1,17 +1,7 @@
-import { Box, Image, Text, Tooltip, VStack, Button } from "@chakra-ui/react";
-import { useState } from "react";
-import { MdLink, MdContactPage } from "react-icons/md";
-import { Config } from "../config";
-
-interface Resume {
-  id: string;
-  name: string;
-  major: string;
-  degree: string;
-  graduationYear: string;
-  jobInterest: Array<string>;
-  portfolios?: Array<string>;
-}
+import { Box, Text, Tooltip, VStack } from "@chakra-ui/react";
+// import { useState } from "react";
+import { MdContactPage } from "react-icons/md";
+import { Resume } from "./ResumeBook";
 
 interface ResumeComponentProps {
   resume: Resume;
@@ -30,16 +20,16 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
   baseColor,
   bgColor,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  // const [isExpanded, setIsExpanded] = useState(false);
 
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
+  // const toggleExpand = () => {
+  //   setIsExpanded(!isExpanded);
+  // };
 
   return (
     <Box
-      key={resume.id}
-      onClick={() => toggleResume(resume.id)}
+      key={resume.userId}
+      onClick={() => toggleResume(resume.userId)}
       borderWidth="3px"
       borderRadius="lg"
       overflow="hidden"
@@ -59,11 +49,11 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
         borderWidth: "3px",
       }}
     >
-      {Config.STAFF_UIDs.includes(resume.id) && (
+      {/* {Config.STAFF_UIDs.includes(resume.id) && (
         <Tooltip label="Staff Member" fontSize="md">
           <Image src="/2024_rp_logo.svg" width='20px' height='20px' />
         </Tooltip>
-      )}
+      )} */}
       <Tooltip label="Open Resume" fontSize="md">
         <Box
           padding="2px"
@@ -76,14 +66,14 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
           right="2"
           onClick={(e) => {
             e.stopPropagation();
-            openResume(resume.id);
+            openResume(resume.userId);
           }}
         >
           <MdContactPage size={30} />
         </Box>
       </Tooltip>
 
-      <Tooltip label={resume.portfolios?.length === 0 ? "" : "Show Links"} fontSize="md">
+      {/* <Tooltip label={resume.portfolios?.length === 0 ? "" : "Show Links"} fontSize="md">
         <Box
           opacity={resume.portfolios?.length === 0 ? 0 : 1}
           padding="2px"
@@ -102,17 +92,17 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
         >
           <MdLink size={30} />
         </Box>
-      </Tooltip>
+      </Tooltip> */}
 
       <Box width="108%" height="30%">
         <VStack align="start" mt="4">
           <Text fontWeight="bold" fontSize="lg" maxW={"70%"}>
-            {resume.name}
+            {resume.legalName}
           </Text>
-          <Text mb={isExpanded ? 0 : 6} color="gray.500" fontSize="sm" mr="20px">
+          <Text mb={6} color="gray.500" fontSize="sm" mr="20px">
             {resume.degree} in {resume.major}
           </Text>
-          {isExpanded && resume.portfolios && (
+          {/* {isExpanded && resume.portfolios && (
         <Box mb={8} maxWidth='100%'>
           <Text fontWeight="bold" fontSize="md">
             Portfolios:
@@ -164,12 +154,12 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
               >
                 {link}
               </Button>
-            ))} */}
+            ))} }
           </VStack>
         </Box>
-      )}
+      )} */}
           <Text position="absolute" bottom="4" left="4" color="gray.500" fontSize="sm">
-            {resume.graduationYear}
+            {resume.gradYear.toString()}
           </Text>
         </VStack>
       </Box>

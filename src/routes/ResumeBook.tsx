@@ -1,42 +1,42 @@
 import { useEffect, useState } from 'react';
-import { Box, Button, ChakraProvider, Flex, Icon, IconButton, Text, HStack, Menu, MenuButton, Avatar, MenuList, MenuItem, useToast, useColorModeValue, Input, Center, ButtonGroup, useMediaQuery } from '@chakra-ui/react';
-import ResumeGrid from './ResumeGrid';
+import { Box, Button, ChakraProvider, Flex, Text, HStack, Menu, MenuButton, Avatar, MenuList, MenuItem, useToast, useColorModeValue, Input, Center, useMediaQuery } from '@chakra-ui/react';
+// import ResumeGrid from './ResumeGrid';
 import ResumeList from './ResumeList';
 import MultiSelectDropdown from "../components/MultiSelectDropdown";
 import { majors } from "../components/majors";
-import { BsGrid, BsList, BsDownload } from "react-icons/bs";
-import { BiSelectMultiple } from "react-icons/bi";
-import { TiDocumentDelete } from "react-icons/ti";
+// import { BsDownload } from "react-icons/bs";
+// import { BiSelectMultiple } from "react-icons/bi";
+// import { TiDocumentDelete } from "react-icons/ti";
 
-import axios from 'axios';
+// import axios from 'axios';
 
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
-import { Config } from "../config";
+// import JSZip from 'jszip';
+// import { saveAs } from 'file-saver';
+// import { Config } from "../config";
 
-interface Resume {
-    id: string;
-    name: string;
-    major: string;
+export interface Resume {
+    userId: string;
+    legalName: string;
+    emailAddress: string;
     degree: string;
-    graduationYear: string;
-    jobInterest: Array<string>;
-    portfolios?: Array<string>;
+    major: string;
+    minor: string;
+    gradYear: number;
 }
 
 // interface ResumeLink {
 //     url: string;
 // }
 
-interface ResumeIDs {
-    userId: string
-    name: string
-    major: string
-    degree: string
-    graduation: string
-    jobInterest: Array<string>
-    portfolios?: Array<string>
-}
+// interface ResumeIDs {
+//     userId: string
+//     name: string
+//     major: string
+//     degree: string
+//     graduation: string
+//     jobInterest: Array<string>
+//     portfolios?: Array<string>
+// }
 
 
 export function ResumeBook() {
@@ -64,19 +64,22 @@ export function ResumeBook() {
     const [pageSize, setPageSize] = useState(1);
     const [resumes, setResumes] = useState<Resume[]>([]);
     const [filteredResumes, setFilteredResumes] = useState<Resume[]>([]);
-    const [showList, setShowList] = useState(true);
+    // const [showList, setShowList] = useState(true);
     const [selectedResumes, setSelectedResumes] = useState<string[]>([]);
-    const [isMobile, setIsMobile] = useState(false);
+    // const [isMobile, setIsMobile] = useState(false);
     const [isMediumScreen] = useMediaQuery("(min-width: 960px)");
     const viewColor = useColorModeValue("200","700");
     // const selectViewColor = useColorModeValue("gray.300","gray.600");
-    const degreeTypes = ["Bachelor's", "Master's", "PhD", "Professional (JD/MD)", "Other"]; 
-    const years = ["Dec 2024", "May 2025", "Dec 2025", "May 2026", "Dec 2026", "May 2027", "Dec 2027", "May 2028", "Dec 2028", "May 2029", "Dec 2029"];
-    const jobInterests = ["SUMMER INTERNSHIP", "FALL INTERNSHIP", "SPRING INTERNSHIP", "FULL TIME"];
+    const degreeTypes = ["Associates' Degree",
+    "Bachelors' Degree ",
+    "Masters' Degree",
+    "PhD",
+    "Graduated",
+    "Other"]; 
+    const years = ["2024", "2025", "2026", "2027", "2028"];
     const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
     const [selectedDegrees, setSelectedDegrees] = useState<string[]>([]);
     const [selectedYears, setSelectedYears] = useState<string[]>([]);
-    const [selectedJobInterests, setSelectedJobInterests] = useState<string[]>([]);
 
     const showToast = (message: string) => {
         toast({
@@ -139,13 +142,13 @@ export function ResumeBook() {
         );
     };
 
-    const selectAllResumes = () => {
-        if (selectedResumes.length === filteredResumes.length) {
-            setSelectedResumes([]);
-        } else {
-            setSelectedResumes(filteredResumes.map((resume) => resume.id));
-        }
-    };
+    // const selectAllResumes = () => {
+    //     if (selectedResumes.length === filteredResumes.length) {
+    //         setSelectedResumes([]);
+    //     } else {
+    //         setSelectedResumes(filteredResumes.map((resume) => resume.userId));
+    //     }
+    // };
 
     // const downloadFileFromS3 = async (s3Url: string) => {
     //     try {
@@ -170,121 +173,121 @@ export function ResumeBook() {
     //     }
     // };
 
-    const downloadResumes = async () => {
-        const jwt = localStorage.getItem('jwt');
-        let totalErrorCount = 0;
+    // const downloadResumes = async () => {
+    //     const jwt = localStorage.getItem('jwt') || "";
+    //     let totalErrorCount = 0;
     
-        try {
-            const response = await axios.post(
-                Config.API_BASE_URL + "/s3/download/batch/",
-                { userIds: selectedResumes },
-                {
-                    headers: {
-                        Authorization: jwt,
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
+    //     try {
+    //         const response = await axios.post(
+    //             Config.API_BASE_URL + "/s3/download/batch/",
+    //             { userIds: selectedResumes },
+    //             {
+    //                 headers: {
+    //                     Authorization: jwt,
+    //                     'Content-Type': 'application/json'
+    //                 }
+    //             }
+    //         );
     
-            const { data: urls, errorCount } = response.data;
-            totalErrorCount += errorCount;
+    //         const { data: urls, errorCount } = response.data;
+    //         totalErrorCount += errorCount;
     
-            if (urls.length === 0) {
-                showToast("No resumes available for download.");
-                return;
-            }
+    //         if (urls.length === 0) {
+    //             showToast("No resumes available for download.");
+    //             return;
+    //         }
             
-            if (urls.length === 1) {
-                // Single resume - download directly
-                try {
-                    const fileResponse = await axios.get(urls[0], { responseType: 'blob' });
-                    const userId = getFileNameFromUrl(urls[0]).replace(".pdf", ""); 
-                    const resume = filteredResumes.find(r => r.id == userId);
+    //         if (urls.length === 1) {
+    //             // Single resume - download directly
+    //             try {
+    //                 const fileResponse = await axios.get(urls[0], { responseType: 'blob' });
+    //                 const userId = getFileNameFromUrl(urls[0]).replace(".pdf", ""); 
+    //                 const resume = filteredResumes.find(r => r.userId == userId);
                     
-                    if (resume === undefined) {
-                        throw new Error("Resume not found in filteredResumes");
-                    }
+    //                 if (resume === undefined) {
+    //                     throw new Error("Resume not found in filteredResumes");
+    //                 }
     
-                    const fileName = cleanUpName(resume.name) + ".pdf";
-                    saveAs(fileResponse.data, fileName);
-                } catch (error) {
-                    totalErrorCount++;
-                    console.error("Error downloading single resume:", error);
-                }
-            } else {
-                // Multiple resumes - create a zip file
-                const zip = new JSZip();
-                const failedDownloads = [];
+    //                 const fileName = cleanUpName(resume.legalName) + ".pdf";
+    //                 saveAs(fileResponse.data, fileName);
+    //             } catch (error) {
+    //                 totalErrorCount++;
+    //                 console.error("Error downloading single resume:", error);
+    //             }
+    //         } else {
+    //             // Multiple resumes - create a zip file
+    //             const zip = new JSZip();
+    //             const failedDownloads = [];
                 
-                for (const url of urls) {
-                    try {
-                        const userId = getFileNameFromUrl(url).replace(".pdf", "");
-                        const resume = filteredResumes.find(r => r.id == userId);
-                        if (resume === undefined) {
-                            throw new Error("Resume not found in filteredResumes");
-                        }
+    //             for (const url of urls) {
+    //                 try {
+    //                     const userId = getFileNameFromUrl(url).replace(".pdf", "");
+    //                     const resume = filteredResumes.find(r => r.userId == userId);
+    //                     if (resume === undefined) {
+    //                         throw new Error("Resume not found in filteredResumes");
+    //                     }
     
-                        const fileResponse = await axios.get(url, { responseType: 'blob' });
-                        const fileName = cleanUpName(resume.name) + ".pdf";
+    //                     const fileResponse = await axios.get(url, { responseType: 'blob' });
+    //                     const fileName = cleanUpName(resume.legalName) + ".pdf";
     
-                        zip.file(fileName, fileResponse.data);
-                    } catch (error) {
-                        totalErrorCount++;
-                        failedDownloads.push(url);
-                        console.error("Error downloading resume:", url, error);
-                    }
-                }
+    //                     zip.file(fileName, fileResponse.data);
+    //                 } catch (error) {
+    //                     totalErrorCount++;
+    //                     failedDownloads.push(url);
+    //                     console.error("Error downloading resume:", url, error);
+    //                 }
+    //             }
                 
-                if (Object.keys(zip.files).length > 0) {
-                    try {
-                        const content = await zip.generateAsync({ type: "blob" });
-                        saveAs(content, "resumes.zip");
-                    } catch (error) {
-                        console.error("Error generating zip file:", error);
-                        showToast("Failed to create zip file. Some resumes may not have been downloaded.");
-                    }
-                } else {
-                    showToast("No resumes were successfully downloaded.");
-                    return;
-                }
+    //             if (Object.keys(zip.files).length > 0) {
+    //                 try {
+    //                     const content = await zip.generateAsync({ type: "blob" });
+    //                     saveAs(content, "resumes.zip");
+    //                 } catch (error) {
+    //                     console.error("Error generating zip file:", error);
+    //                     showToast("Failed to create zip file. Some resumes may not have been downloaded.");
+    //                 }
+    //             } else {
+    //                 showToast("No resumes were successfully downloaded.");
+    //                 return;
+    //             }
     
-                if (failedDownloads.length > 0) {
-                    console.log("Failed downloads:", failedDownloads);
-                }
-            }
+    //             if (failedDownloads.length > 0) {
+    //                 console.log("Failed downloads:", failedDownloads);
+    //             }
+    //         }
     
-            if (totalErrorCount > 0) {
-                showToast(`${totalErrorCount} resume(s) could not be downloaded.`);
-            }
-        } catch (error) {
-            console.error("Error in batch download request:", error);
-            showToast("Failed to initiate resume download(s). Please try again later.");
-        }
-    };
+    //         if (totalErrorCount > 0) {
+    //             showToast(`${totalErrorCount} resume(s) could not be downloaded.`);
+    //         }
+    //     } catch (error) {
+    //         console.error("Error in batch download request:", error);
+    //         showToast("Failed to initiate resume download(s). Please try again later.");
+    //     }
+    // };
 
-    const cleanUpName = (str: string): string => {
-        return str
-          .toLowerCase()                                   // Convert the string to lowercase
-          .replace(/\s+(\w)/g, (_, c) => c.toUpperCase())  // Capitalize the first letter of each word after whitespace
-          .replace(/\s+/g, '')                             // Remove any remaining whitespace
-          .replace(/^\w/, (c) => c.toUpperCase());         // Capitalize the first letter of the result
-      };
+    // const cleanUpName = (str: string): string => {
+    //     return str
+    //       .toLowerCase()                                   // Convert the string to lowercase
+    //       .replace(/\s+(\w)/g, (_, c) => c.toUpperCase())  // Capitalize the first letter of each word after whitespace
+    //       .replace(/\s+/g, '')                             // Remove any remaining whitespace
+    //       .replace(/^\w/, (c) => c.toUpperCase());         // Capitalize the first letter of the result
+    //   };
 
-    const getFileNameFromUrl = (url: string): string => {
-        const parts = url.split('/');
-        const temp =  parts[parts.length - 1];
-        return temp.substring(0, temp.indexOf("?"));
-    };
+    // const getFileNameFromUrl = (url: string): string => {
+    //     const parts = url.split('/');
+    //     const temp =  parts[parts.length - 1];
+    //     return temp.substring(0, temp.indexOf("?"));
+    // };
 
 
     const getResumes = async () => {
-        const jwt = localStorage.getItem("jwt");
+        const jwt = localStorage.getItem("jwt") || "";
 
         const requestBody: {
             graduations?: string[];
             degrees?: string[];
             majors?: string[];
-            jobInterests?: string[];
+            // jobInterests?: string[];
         } = {
             // filter: {
             //     hasResume: true
@@ -300,9 +303,9 @@ export function ResumeBook() {
             //     { dietaryRestrictions: 1 },
             //     { hasResume: 1 }
             // ]
-            // graduations: selectedYears,
-            // degrees: selectedDegrees,
-            // majors: selectedMajors,
+            graduations: selectedYears,
+            degrees: selectedDegrees,
+            majors: selectedMajors,
             // jobInterests: selectedJobInterests
         };
 
@@ -315,13 +318,13 @@ export function ResumeBook() {
         if (selectedMajors.length > 0) {
             requestBody['majors'] = selectedMajors;
         }
-        if (selectedJobInterests.length > 0) {
-            requestBody['jobInterests'] = selectedJobInterests;
-        }
+        // if (selectedJobInterests.length > 0) {
+        //     requestBody['jobInterests'] = selectedJobInterests;
+        // }
 
-        const headers = {
-            Authorization: jwt
-        };
+        // const headers = {
+        //     Authorization: jwt
+        // };
 
         // axios.get(Config.API_BASE_URL + "/registration/filter", { headers, requestBody })
           
@@ -338,52 +341,63 @@ export function ResumeBook() {
         if (selectedMajors.length > 0) {
             params.append('majors', JSON.stringify(requestBody.majors));
         }
-        if (selectedJobInterests.length > 0) {
-            params.append('jobInterests', JSON.stringify(requestBody.jobInterests));
-        }
+        // if (selectedJobInterests.length > 0) {
+        //     params.append('jobInterests', JSON.stringify(requestBody.jobInterests));
+        // }
 
         setResumes([]);
         setFilteredResumes([]);
+
+        // if (requestBody.graduations && requestBody.graduations.length > 0) {
+        //     queryParams.append('graduations', JSON.stringify(requestBody.graduations));
+        // }
+        // if (requestBody.degrees && requestBody.degrees.length > 0) {
+        //     queryParams.append('degrees', JSON.stringify(requestBody.degrees));
+        // }
+        // if (requestBody.majors && requestBody.majors.length > 0) {
+        //     queryParams.append('majors', JSON.stringify(requestBody.majors));
+        // }
 
         // axios.get(Config.API_BASE_URL + "/registration/filter/pagecount", { headers, params })
         // .then(function (response) {
         //     console.log(response.data);
         //     setPageSize(response.data.pagecount);
         // })
-        axios.post(Config.API_BASE_URL + "/registration/filter/pagecount", requestBody, {headers})
-        .then(function (response) {
-            setPageSize(response.data.pagecount);
-            if (page > response.data.pagecount) {
-                setPage(1);
-            }
-        })
+        const response = await fetch("https://adonix.hackillinois.org/sponsor/resumebook/pagecount",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: jwt,
+                },
+                body: JSON.stringify(requestBody)
+            },
+        );
+        
+        const { pageCount } = await response.json();
+        setPageSize(pageCount);
+        if (page > pageCount) {
+            setPage(1);
+        }
           
-        axios.post(Config.API_BASE_URL + "/registration/filter/"+page, requestBody, {headers})
-        .then(function (response) {
-            const fetchedResumes = response.data.registrants.map((item: ResumeIDs) => ({
-                id: item.userId,
-                name: item.name,
-                major: item.major,
-                degree: item.degree,
-                graduationYear: item.graduation,
-                jobInterest: item.jobInterest,
-                portfolios: item.portfolios
-            }));
+        const pageResponse = await fetch(`https://adonix.hackillinois.org/sponsor/resumebook/${page}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: jwt,
+                },
+                body: JSON.stringify(requestBody)
+            },
+        );
 
-            // console.log(fetchedResumes);
-    
-            // Use a Set to ensure unique resumes
-            // const uniqueResumes = new Set([...resumes, ...fetchedResumes]);
-            // setResumes(Array.from(uniqueResumes));
-            // setFilteredResumes(Array.from(uniqueResumes));
-            setResumes(fetchedResumes);
-            setFilteredResumes(fetchedResumes);
-        })
-        .catch(function (error) {
-            // handle error
-            // console.log(error);
-            showToast(`Error ${error}: Failed to fetch resumes - please sign in again`);
-        })
+        if (!pageResponse.ok) {
+            showToast(`Error: Failed to fetch resumes - please sign in again`);
+        }
+
+        const resumes = await pageResponse.json();
+        setResumes(resumes);
+        setFilteredResumes(resumes)
     }
 
     const signOut = () => {
@@ -391,28 +405,27 @@ export function ResumeBook() {
         window.location.href = "/";
     }
 
-
     useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 550);
-        };
+        // const handleResize = () => {
+        //     setIsMobile(window.innerWidth < 550);
+        // };
 
-        handleResize();
+        // handleResize();
 
         if (resumes.length === 0) {
             getResumes();
         }
 
-        window.addEventListener('resize', handleResize);
+        // window.addEventListener('resize', handleResize);
 
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
+        // return () => {
+        //     window.removeEventListener('resize', handleResize);
+        // };
     }, []);
 
     useEffect(() => {
         getResumes();
-    }, [page, selectedYears, selectedDegrees, selectedMajors, selectedJobInterests]);
+    }, [page, selectedYears, selectedDegrees, selectedMajors]);
 
     // useEffect(() => {
     //     // filterResumes();
@@ -433,7 +446,7 @@ export function ResumeBook() {
                     <Text color='darkslategray' fontFamily={'Nunito'} textOverflow={"none"} fontSize="24px" >Resume Book</Text>
                 </HStack>
                 <Flex alignItems={'center'} zIndex="20">
-                    <ButtonGroup isAttached border={'1px solid lightgray'} borderRadius={'7px'} 
+                    {/* <ButtonGroup isAttached border={'1px solid lightgray'} borderRadius={'7px'} 
                         marginX={4} variant="outline">
                         <IconButton
                             color='gray'
@@ -456,7 +469,7 @@ export function ResumeBook() {
                             border={showList ? '1px solid transparent' : '1px solid gray.200'}
                             transition="border-color 0.3s ease"
                         />
-                    </ButtonGroup>
+                    </ButtonGroup> */}
                     <Menu>
                     <MenuButton
                         as={Button}
@@ -506,7 +519,7 @@ export function ResumeBook() {
                             baseColor={viewColor}
                             placeholderText='Filter Year(s)'
                         />
-                        <MultiSelectDropdown
+                        {/* <MultiSelectDropdown
                             id="job-dropdown"
                             width='20%'
                             options={jobInterests}
@@ -514,10 +527,10 @@ export function ResumeBook() {
                             onSelectionChange={(newSelectedJobInterests) => setSelectedJobInterests(newSelectedJobInterests)}
                             baseColor={viewColor}
                             placeholderText='Filter Job Interest(s)'
-                        />
+                        /> */}
 
                     </Flex>
-                    <Flex p={2}>
+                    {/* <Flex p={2}>
 
                         <Button onClick={selectAllResumes} mr={2} backgroundColor={selectedResumes.length === filteredResumes.length ? '#fb923c' : 'blue.300'} color={'white'} border='1px solid transparent' _hover={{ border:'1px solid black', backgroundColor: `${selectedResumes.length === filteredResumes.length ? 'red.200' : 'blue.200'}`, color: 'black'}} transition="border background-color color 0.3s ease">
                             {isMobile ? (
@@ -529,12 +542,13 @@ export function ResumeBook() {
                         <Button mr={2} onClick={downloadResumes} border='1px solid transparent' _hover={{ border:'1px solid black', backgroundColor: 'gray.300', color: 'black' }} backgroundColor={parseInt(viewColor) < 500 ? 'gray.'+(parseInt(viewColor)+300): 'gray.'+(parseInt(viewColor)-200)} color={'white'} isDisabled={selectedResumes.length < 1} transition="border background-color color 0.3s ease">
                             {isMobile ? <BsDownload/> : 'Download'}
                         </Button>
-                        {/* <Button>Button 3</Button> */}
-                    </Flex>
+                        {/* <Button>Button 3</Button> }
+                    </Flex> */}
                 </Flex>
             </Box>
             {
-                showList ? <ResumeList resumes={filteredResumes} selectedResumes={selectedResumes} toggleResume={toggleResume} baseColor={viewColor} /> : <ResumeGrid resumes={filteredResumes} selectedResumes={selectedResumes} toggleResume={toggleResume} baseColor={viewColor} />
+                <ResumeList resumes={filteredResumes} selectedResumes={selectedResumes} toggleResume={toggleResume} baseColor={viewColor} />
+                // showList ? <ResumeList resumes={filteredResumes} selectedResumes={selectedResumes} toggleResume={toggleResume} baseColor={viewColor} /> : <ResumeGrid resumes={filteredResumes} selectedResumes={selectedResumes} toggleResume={toggleResume} baseColor={viewColor} />
             }
             <Box>
                 <Center mt={4}>
@@ -544,7 +558,7 @@ export function ResumeBook() {
                         </Button>
                         <HStack spacing={2}>
                         <Input
-                            color='white'
+                            color='black'
                             value={page}
                             onChange={handlePageChange}
                             type="number"
@@ -553,7 +567,7 @@ export function ResumeBook() {
                             width="50px"
                             textAlign="center"
                         />
-                        <Text color='white'>/ {pageSize}</Text>
+                        <Text color='black'>/ {pageSize}</Text>
                         </HStack>
                         <Button onClick={handleNext} isDisabled={page === pageSize}>
                         Next
