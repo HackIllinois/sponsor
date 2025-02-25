@@ -406,6 +406,9 @@ export function ResumeBook() {
     }
 
     useEffect(() => {
+        if (!localStorage.getItem("jwt")) {
+            window.location.href = "/login";
+        }
         // const handleResize = () => {
         //     setIsMobile(window.innerWidth < 550);
         // };
