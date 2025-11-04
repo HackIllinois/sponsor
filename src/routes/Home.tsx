@@ -1,21 +1,43 @@
-import { Box, Flex, Text, Spacer, Stack, HStack, Button, useMediaQuery, Image } from "@chakra-ui/react";
-import '@fontsource/roboto-slab'
-import '@fontsource/nunito'
+import {
+  Box,
+  Flex,
+  Text,
+  Spacer,
+  Stack,
+  HStack,
+  Button,
+  useMediaQuery,
+  Image,
+  VStack,
+} from "@chakra-ui/react";
+import "@fontsource/roboto-slab";
+import "@fontsource/nunito";
 
 export function Home() {
-    const [isMobile] = useMediaQuery("(max-width: 850px)");
-    const [isSmall] = useMediaQuery("(max-width: 500px)");
-    
-    return (
-        <Box maxH={"80vh"}>
-            <Flex minHeight="88vh" pb="18vh" pt={isMobile ? "4vh" : "10vh"} flexDirection={"column"} alignItems={"center"} textAlign="center" textColor={"#fba036"} backgroundImage={"/main-background.svg"} backgroundSize={isMobile ? "contain" : "cover"} backgroundRepeat={"no-repeat"}>
-                <Box p='4' width={isMobile ? "75%" : "100%"} marginBottom={"15vh"}>
-                    <HStack justifyContent="center" spacing="8px" textAlign={"center"}>
-                        <Image src="/hackillinois-main.svg" />
-                    </HStack>
-                </Box>
-                <Spacer />
-                    {/* {isMobile ? (
+  const [isMobile] = useMediaQuery("(max-width: 850px)");
+  const [isSmall] = useMediaQuery("(max-width: 500px)");
+
+  return (
+    <Box maxH={"80vh"}>
+      <Flex
+        minHeight="88vh"
+        pb="18vh"
+        pt={isMobile ? "4vh" : "10vh"}
+        flexDirection={"column"}
+        alignItems={"center"}
+        textAlign="center"
+        textColor={"#fba036"}
+        backgroundImage={"/main-background.svg"}
+        backgroundSize={isMobile ? "contain" : "cover"}
+        backgroundRepeat={"no-repeat"}
+      >
+        <Box p="4" width={isMobile ? "75%" : "100%"} marginBottom={"15vh"}>
+          <HStack justifyContent="center" spacing="8px" textAlign={"center"}>
+            <Image src="/hackillinois-main.svg" />
+          </HStack>
+        </Box>
+        <Spacer />
+        {/* {isMobile ? (
                         <Stack direction='column' justifyContent="center" spacing='30px' textAlign={"center"}>
                             <Stack direction='row' justifyContent="center" spacing={isSmall? '70px' : '100px'}>
                                 <Box>
@@ -52,12 +74,52 @@ export function Home() {
                             </Box>
                         </Stack>
                     )} */}
-                <Spacer />
-                <Stack direction={isMobile ? 'column' : 'row'} justifyContent="center" spacing={isMobile ? '30px' : "220px"} alignItems='center' mt='10px' >
-                    <Button w={isMobile ? "300px" : "450px"} h={isMobile ? "75px" : "125px"} zIndex={"1"} borderRadius={"2rem"} _hover={{ bg: "#68C8BF" }} as="a" href="/sponsors.pdf"><Text fontSize={isSmall ? "22" : "30"}>Sponsorship Packet</Text></Button>
-                    <Button w={isMobile ? "300px" : "450px"} h={isMobile ? "75px" : "125px"} zIndex={"1"} borderRadius={"2rem"} _hover={{ bg: "#68C8BF" }} as="a" href="/login"><Text fontSize={isSmall ? "22" : "30"}>Resume Book</Text></Button>
-                </Stack>
-            </Flex>
-        </Box>
-    );
+        <Spacer />
+        <Stack
+          direction={isMobile ? "column" : "row"}
+          justifyContent="center"
+          spacing={isMobile ? "30px" : "220px"}
+          alignItems="start"
+          justifyItems={"left"}
+          mt="10px"
+        >
+          <VStack gap={0}>
+            <Button
+              w={isMobile ? "300px" : "450px"}
+              h={isMobile ? "75px" : "125px"}
+              zIndex={"1"}
+              borderRadius={"2rem"}
+              _hover={{ bg: "#68C8BF" }}
+              as="a"
+              href="/sponsors.pdf"
+            >
+              <Text fontSize={isSmall ? "22" : "30"}>Sponsorship Packet</Text>
+            </Button>
+            <Text
+              as="a"
+              href="/sponsors.png"
+              fontSize={isSmall ? "14" : "16"}
+              color="#68C8BF"
+              mt="4px"
+              alignSelf="center"
+              _hover={{ textDecoration: "underline", color: "#fba036" }}
+            >
+              View as PNG
+            </Text>
+          </VStack>
+          <Button
+            w={isMobile ? "300px" : "450px"}
+            h={isMobile ? "75px" : "125px"}
+            zIndex={"1"}
+            borderRadius={"2rem"}
+            _hover={{ bg: "#68C8BF" }}
+            as="a"
+            href="/login"
+          >
+            <Text fontSize={isSmall ? "22" : "30"}>Resume Book</Text>
+          </Button>
+        </Stack>
+      </Flex>
+    </Box>
+  );
 }
