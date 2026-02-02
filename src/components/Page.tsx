@@ -1,5 +1,4 @@
 import { Grid, GridItem } from "@chakra-ui/react";
-import { NavBar } from "./NavBar";
 
 interface PageProps {
     pageContent: React.ReactElement,
@@ -27,9 +26,6 @@ export function Page({pageContent, showNav}: PageProps) {
         bg={"brand.100"}
         overflow="hidden" height="100%"
     >
-        <GridItem area={'header'} pl="10px" pt="10px" zIndex={999} height={"fit-content"}>
-            <NavBar />
-        </GridItem>
         {/* {showNav ? 
             <GridItem pl='2' area={'nav'}>
                 Nav

@@ -1,480 +1,335 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Box, Text, VStack, Grid, GridItem, useMediaQuery, useToast } from '@chakra-ui/react';
-import ResumeListBox from './ResumeListBox';
-import { Resume } from './ResumeBook';
+import useWindowWidth from "../util/use-window-width-hook.ts";
+import {
+  Box,
+  Grid,
+  GridItem,
+  Icon,
+  Skeleton,
+  Stack,
+  Text,
+  useMediaQuery,
+  VStack
+} from "@chakra-ui/react";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  FaBook,
+  FaFileDownload,
+  FaGraduationCap,
+  FaUniversity,
+  FaUser
+} from "react-icons/fa";
+import {
+  FaArrowDownWideShort,
+  FaArrowUpWideShort,
+  FaUserTie
+} from "react-icons/fa6";
+import { Resume } from "./ResumeBook";
+import ResumeListBox from "./ResumeListBox.tsx";
 
 interface ResumeListProps {
+  loading: boolean;
   resumes: Resume[];
   selectedResumes: string[];
-  toggleResume: (id: string) => void;
+  openResume: (resume: Resume) => void;
+  toggleResume: (resumeId: string) => void;
   baseColor: string;
+  sortByColumn?: SingleCol;
+  sortDirection: "asc" | "desc";
+  onSortByColumn: (column: SingleCol) => void;
 }
 
-const ResizableColumn: React.FC<{
-    width: number;
-    onResize: (width: number) => void;
-    children: React.ReactNode;
-    canResize: boolean;
-    baseColor: string;
-  }> = ({ width, onResize, children, canResize, baseColor }) => {
-    const startXRef = useRef<number | null>(null);
-    const viewColor = "gray."+baseColor;
-    const selectViewColor = "gray."+(parseInt(baseColor)-100);
-    const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-      startXRef.current = e.clientX;
-      
-      const handleMouseMove = (e: MouseEvent) => {
-        if (startXRef.current !== null) {
-          const diff = e.clientX - startXRef.current;
-          onResize(Math.max(50, width + diff));
+const TableColumn: React.FC<{
+  onClick: () => void;
+  children: React.ReactNode;
+}> = ({ onClick, children }) => {
+  return (
+    <Box
+      position="relative"
+      display="flex"
+      alignItems={"center"}
+      gap={1.5}
+      minWidth="50px"
+      cursor="default"
+      onClick={onClick}
+      _hover={{
+        color: "gray.600",
+        cursor: "pointer"
+      }}
+    >
+      {children}
+    </Box>
+  );
+};
+
+export type SingleCol =
+  | "checkbox"
+  | "name"
+  | "fieldsOfStudy"
+  | "degree"
+  | "graduationYear"
+  | "actions"
+  | "data"
+  | "links"
+  | "resume";
+
+type ColumnProps = {
+  id: SingleCol;
+  sortColId?: SingleCol;
+  sortDirection?: "asc" | "desc";
+  selectedSingleCol?: SingleCol;
+  name: string;
+  icon: React.ElementType;
+  boxSize?: number;
+  onSort?: (col: SingleCol) => void;
+};
+
+const Column = ({
+  id,
+  sortColId,
+  sortDirection,
+  name,
+  icon,
+  boxSize = 3,
+  onSort
+}: ColumnProps) => {
+  return (
+    <GridItem
+      _groupHover={{
+        cursor: onSort ? "pointer" : undefined
+      }}
+      onClick={() => {
+        if (onSort) {
+          onSort(id);
         }
-      };
-  
-      const handleMouseUp = () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-  
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    }, [width, onResize]);
-  
-    return (
-      <Box
-        position="relative"
-        display="inline-block"
-        width={`${width}px`}
-        minWidth="50px"
-        cursor="default"
+      }}
+    >
+      <TableColumn
+        onClick={() => {
+          if (onSort) {
+            onSort(id);
+          }
+        }}
       >
-        {children}
-        {canResize ? (
-        <Box
-          position="absolute"
-          right="-6px"
-          top="0"
-          height="100%"
-          width="3px"
-          cursor="col-resize"
-          backgroundColor={viewColor}
-          transition="all 0.3s"
-          _hover={{ backgroundColor: {selectViewColor}, height: "120%", top: "-10%"}}
-          onMouseDown={handleMouseDown}
-          zIndex="1"
+        <Icon
+          as={icon}
+          boxSize={boxSize}
+          color="gray.600"
+          _groupHover={{
+            color: onSort ? "gray.400" : undefined
+          }}
         />
-        ) : null}
-      </Box>
-    );
-  };
+        <Text
+          fontWeight="bold"
+          userSelect="none"
+          fontSize={{
+            base: "sm",
+            lg: "md"
+          }}
+        >
+          {name}
+        </Text>
+        {sortColId === id && (
+          <Icon
+            as={
+              sortDirection === "asc"
+                ? FaArrowUpWideShort
+                : FaArrowDownWideShort
+            }
+            boxSize={4}
+            color="gray.600"
+            ml={2}
+          />
+        )}
+      </TableColumn>
+    </GridItem>
+  );
+};
 
-const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggleResume, baseColor }) => {
-  const [columnWidths, setColumnWidths] = useState({
-    checkbox: 50,
-    name: 175,
-    major: 300,
-    degree: 150,
-    graduationYear: 150,
-    actions: 150,
-    data: 300,
-  });
-
+const ResumeList: React.FC<ResumeListProps> = ({
+  loading,
+  resumes,
+  selectedResumes,
+  openResume,
+  toggleResume,
+  baseColor,
+  sortByColumn,
+  sortDirection,
+  onSortByColumn
+}) => {
   const navbarRef = useRef<HTMLDivElement>(null);
-  const [isSticky, setIsSticky] = useState(false);
   const [navbarTop, setNavbarTop] = useState(0);
-  // const viewColor = "gray."+baseColor;
-  const bgColor = parseInt(baseColor) < 500 ? "gray."+(parseInt(baseColor)-100) : "gray."+(100+parseInt(baseColor))
-  // const selectViewColor = useColorModeValue("gray.300","gray.600")
+
+  const bgColor =
+    parseInt(baseColor) < 500
+      ? "gray." + (parseInt(baseColor) - 100)
+      : "gray." + (100 + parseInt(baseColor));
 
   useEffect(() => {
     const navbar = navbarRef.current;
     if (navbar) {
       setNavbarTop(navbar.offsetTop);
     }
-
-    const handleScroll = () => {
-      if (navbar) {
-        const scrollY = window.scrollY;
-        setIsSticky(scrollY > navbarTop);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
   }, [navbarTop, baseColor]);
 
-  const [isLargerThan2560] = useMediaQuery("(min-width: 2560px)");
-  const [isLargerThan1800] = useMediaQuery("(min-width: 1800px)");
-  const [isLargerThan1550] = useMediaQuery("(min-width: 1550px)");  
-  const [isLargerThan1280] = useMediaQuery("(min-width: 1280px)");
-  const [isLargerThan960] = useMediaQuery("(min-width: 960px)");
-  const [isLargerThan700] = useMediaQuery("(min-width: 700px)");
-  const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
-  const [isLargerThan400] = useMediaQuery("(min-width: 400px)");
-  const [isLargerThan330] = useMediaQuery("(min-width: 330px)");
+  const [screenIsLarge] = useMediaQuery("(min-width: 800px)");
 
-  useEffect(() => {
-    if (isLargerThan2560) {
-        setColumnWidths({
-          checkbox: 50,
-          name: 600,
-          major: 600,
-          degree: 500,
-          graduationYear: 500,
-          actions: 250,
-          data: 300,
-        });
-    }
-    else if (isLargerThan1800) {
-        setColumnWidths({
-          checkbox: 50,
-          name: 475,
-          major: 350,
-          degree: 300,
-          graduationYear: 250,
-          actions: 250,
-          data: 300,
-        });
-    } else if (isLargerThan1550) {
-        setColumnWidths({
-          checkbox: 50,
-          name: 425,
-          major: 300,
-          degree: 200,
-          graduationYear: 200,
-          actions: 250,
-          data: 300,
-        });
-    } else if (isLargerThan1280) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 300,
-        major: 300,
-        degree: 150,
-        graduationYear: 100,
-        actions: 200,
-        data: 300,
-      });
-    } else if (isLargerThan960) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 150,
-        major: 200,
-        degree: 120,
-        graduationYear: 100,
-        actions: 205,
-        data: 300,
-      });
-    } else if (isLargerThan700) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 125,
-        major: 120,
-        degree: 80,
-        graduationYear: 90,
-        actions: 110,
-        data: 300,
-      });
-    } else if (isLargerThan550) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 100,
-        major: 150,
-        degree: 100,
-        graduationYear: 100,
-        actions: 100,
-        data: 300,
-      });
-    } else if (isLargerThan400) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 100,
-        major: 150,
-        degree: 100,
-        graduationYear: 100,
-        actions: 60,
-        data: 220,
-      });
-    } else if (isLargerThan330) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 125,
-        major: 200,
-        degree: 150,
-        graduationYear: 100,
-        actions: 60,
-        data: 150,
-      });
-    } else {
-      setColumnWidths({
-        checkbox: 50,
-        name: 125,
-        major: 200,
-        degree: 150,
-        graduationYear: 100,
-        actions: 60,
-        data: 100,
-      });
-    }
-  }, [isLargerThan1800, isLargerThan1550, isLargerThan1280, isLargerThan960, isLargerThan700, isLargerThan550, isLargerThan400, isLargerThan330]);
-
-  const [isDragging] = useState(false);
-
-  const handleResize = useCallback((column: keyof typeof columnWidths, newWidth: number) => {
-      setColumnWidths(prev => ({
-          ...prev,
-          [column]: newWidth,
-      }));
-  }, []);
-  
-  const toast = useToast();
-  
-  const showToast = (message: string) => {
-      toast({
-      title: message,
-      status: "error",
-      duration: 9000,
-      isClosable: true,
-      });
-  }
-
-  const openResume = async (id: string) => {
-    const jwt = localStorage.getItem('jwt') || "";
-    const response = await fetch(`https://adonix.hackillinois.org/resume/download/${id}`, {
-      headers: {
-        Authorization: jwt
-      }
-    });
-
-    if (!response.ok) {
-      showToast("Failed to open resume. Please try again later.");
-    }
-
-    const { url } = await response.json();
-    window.open(url, '_blank');
-  };
+  const width = useWindowWidth();
+  const screenIsLargeButton = width >= 1200;
 
   return (
-    <VStack spacing="0" align="stretch" paddingTop={isSticky ? `${navbarRef.current?.offsetHeight}px`: '0px' } userSelect={isDragging ? "none" : "auto"}>
-    <Box
+    <VStack
+      id="resume-list"
+      display="flex"
+      flexDirection={"column"}
+      spacing="0"
+      paddingTop={"0px"}
+      w="100%"
+      maxW="100%"
+      h="100%"
+      maxH="100%"
+      borderRadius={"lg"}
+      border="1px solid"
+      borderColor="gray.300"
+      flex={1}
+      align="flex-start"
+      overflowX="auto"
+    >
+      <Box
         ref={navbarRef}
-        position={isSticky ? "fixed" : "relative"}
-        top={isSticky ? "0" : undefined}
-        borderWidth="1px"
-        overflow="hidden"
-        padding="4"
-        background={bgColor}
-        boxShadow="md"
+        position={"relative"}
+        padding="10px"
+        pr="20px"
         width="100%"
+        minW="600px"
         zIndex="10"
+        bgColor="gray.300"
       >
-        <Grid templateColumns={
-            isLargerThan700
-                ? `${columnWidths.name}px ${columnWidths.degree}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
-                : `${columnWidths.data}px ${columnWidths.actions}px`
-            } gap={4} alignItems="center">
-            {/* <GridItem>
-                <Text fontWeight="bold">Select</Text>
-            </GridItem> */}
-            {isLargerThan700 ? (
-                <>
-                <GridItem>
-                    <ResizableColumn width={columnWidths.name} onResize={(width) => handleResize('name', width)} canResize={true} baseColor={baseColor}>
-                    <Text fontWeight="bold">Name</Text>
-                    </ResizableColumn>
-                </GridItem>
-                <GridItem>
-                    <ResizableColumn width={columnWidths.degree} onResize={(width) => handleResize('degree', width)} canResize={true} baseColor={baseColor}>
-                    <Text fontWeight="bold">Degree</Text>
-                    </ResizableColumn>
-                </GridItem>
-                <GridItem>
-                    <ResizableColumn width={columnWidths.major} onResize={(width) => handleResize('major', width)} canResize={true} baseColor={baseColor}>
-                    <Text fontWeight="bold">Major</Text>
-                    </ResizableColumn>
-                </GridItem>
-                <GridItem>
-                    <ResizableColumn width={columnWidths.graduationYear} onResize={(width) => handleResize('graduationYear', width)} canResize={true} baseColor={baseColor}>
-                    <Text fontWeight="bold">Graduation</Text>
-                    </ResizableColumn>
-                </GridItem>
-                </>
+        <Grid
+          templateColumns={
+            screenIsLarge
+              ? "80px 1fr 1fr 1.5fr 1fr 1.2fr 100px"
+              : "60px minmax(0, 1.5fr) minmax(0, 1fr) 100px"
+          }
+          gap={4}
+          alignItems="center"
+        >
+          <GridItem></GridItem>
+          <>
+            {screenIsLarge ? (
+              <>
+                <Column
+                  id="name"
+                  name="Name"
+                  sortColId={sortByColumn}
+                  sortDirection={sortDirection}
+                  icon={FaUser}
+                  onSort={onSortByColumn}
+                />
+                <Column
+                  id="degree"
+                  name="Degree"
+                  sortColId={sortByColumn}
+                  sortDirection={sortDirection}
+                  icon={FaUniversity}
+                  onSort={onSortByColumn}
+                />
+                <Column
+                  id="fieldsOfStudy"
+                  name="Fields of Study"
+                  sortColId={sortByColumn}
+                  sortDirection={sortDirection}
+                  icon={FaBook}
+                  onSort={onSortByColumn}
+                />
+                <Column
+                  id="graduationYear"
+                  name="Graduation"
+                  sortColId={sortByColumn}
+                  sortDirection={sortDirection}
+                  icon={FaGraduationCap}
+                  boxSize={4}
+                  onSort={onSortByColumn}
+                />
+                <Column
+                  id="links"
+                  name="Links"
+                  sortColId={sortByColumn}
+                  sortDirection={sortDirection}
+                  icon={FaGraduationCap}
+                  boxSize={4}
+                />
+                <Column
+                  id="resume"
+                  name="Resume"
+                  sortColId={sortByColumn}
+                  sortDirection={sortDirection}
+                  icon={FaUserTie}
+                  boxSize={4}
+                />
+              </>
             ) : (
-                <GridItem>
-                <ResizableColumn width={columnWidths.data} onResize={(width) => handleResize('data', width)} canResize={true} baseColor={baseColor}>
-                    <Text fontWeight="bold">Data</Text>
-                </ResizableColumn>
-                </GridItem>
+              <>
+                <Column
+                  id="name"
+                  name="Student"
+                  sortColId={sortByColumn}
+                  sortDirection={sortDirection}
+                  icon={FaUser}
+                  onSort={onSortByColumn}
+                />
+                <Column
+                  id="links"
+                  name="Links"
+                  sortColId={sortByColumn}
+                  sortDirection={sortDirection}
+                  icon={FaFileDownload}
+                  boxSize={4}
+                  onSort={onSortByColumn}
+                />
+                <Column
+                  id="resume"
+                  name="Resume"
+                  sortColId={sortByColumn}
+                  sortDirection={sortDirection}
+                  icon={FaUserTie}
+                  boxSize={4}
+                />
+              </>
             )}
-            <GridItem>
-                <ResizableColumn width={columnWidths.actions} onResize={(width) => handleResize('actions', width)} canResize={false} baseColor={baseColor}>
-                <Text fontWeight="bold">Actions</Text>
-                </ResizableColumn>
-            </GridItem>
-            </Grid>
+          </>
+        </Grid>
       </Box>
-
-      {/* {isSticky && (
-        <Box height={`${navbarRef.current?.offsetHeight}px`} />
-      )} */}
-
-    {resumes.map((resume) => {
-        return (
-            <ResumeListBox resume={resume} key={resume.userId} isSelected={selectedResumes.includes(resume.userId)} columnWidths={columnWidths} isLargerThan700={isLargerThan700} toggleResume={toggleResume} openResume={openResume} baseColor={baseColor} bgColor={bgColor} />
-        );
-        // const isSelected = selectedResumes.includes(resume.id);
-        // const [isExpanded, setIsExpanded] = useState(false);
-        // const isExpanded = true;
-
-        // const toggleExpand = () => {
-        //   setIsExpanded(!isExpanded);
-        // };
-        // return (
-        //   <Box 
-        //   key={resume.id}
-        //   borderWidth='2px'
-        //   padding='10px'
-        //   background={isSelected ? 'blue.' + baseColor : bgColor}
-        //   borderRadius="lg" 
-        //   overflow="hidden"
-        //   marginTop='1'
-        //   boxShadow="md"
-        //   position="relative"
-        //   cursor="pointer"
-        //   transition="all 0.2s ease"
-        //   _hover={{ background: isSelected ? 'blue.' + (parseInt(baseColor) + 100) : 'gray.' + (parseInt(baseColor) > 500 ? parseInt(baseColor) - 100 : parseInt(baseColor) + 100), boxShadow: 'lg' }}
-        //   borderColor={isSelected ? 'blue.500' : 'gray.' + baseColor}
-        //   onClick={() => toggleResume(resume.id)}
-        // >
-        //   <Grid templateColumns={
-        //       isLargerThan700
-        //       ? `${columnWidths.checkbox}px ${columnWidths.name}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
-        //       : `${columnWidths.checkbox}px ${columnWidths.data}px ${columnWidths.actions}px`
-        //   } gap={4} alignItems="center">
-        //     <GridItem>
-        //       <Checkbox 
-        //         size="lg"
-        //         isChecked={isSelected}
-        //         onChange={() => toggleResume(resume.id)}
-        //       />
-        //     </GridItem>
-        //     {isLargerThan700 ? (
-        //       <>
-        //         <GridItem>
-        //           <HStack spacing={2}>
-        //             <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
-        //             <Button
-        //               backgroundColor='blue.500'
-        //               color='white'
-        //               size="sm"
-        //               onClick={(e) => {
-        //                 e.stopPropagation();
-        //                 openResume(resume.id);
-        //               }}
-        //             >
-        //               {isLargerThan550 ? '>' : <MdOpenInNew />}
-        //             </Button>
-        //           </HStack>
-        //         </GridItem>
-        //         <GridItem>
-        //           <Text color="gray.500" fontSize="sm">{resume.major}</Text>
-        //         </GridItem>
-        //         <GridItem>
-        //           <Text color="gray.500" fontSize="sm">{resume.graduationYear}</Text>
-        //         </GridItem>
-        //       </>
-        //     ) : (
-        //       <GridItem>
-        //         <VStack align="start" spacing={1}>
-        //           <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
-        //           <Text color="gray.500" fontSize="sm">{resume.major}</Text>
-        //           <Text color="gray.500" fontSize="sm">{resume.graduationYear}</Text>
-        //         </VStack>
-        //       </GridItem>
-        //     )}
-        //     <GridItem zIndex='5'>
-        //       <HStack spacing={2}>
-        //         <Button
-        //           backgroundColor='blue.500'
-        //           color='white'
-        //           size="sm"
-        //           onClick={(e) => {
-        //             e.stopPropagation();
-        //             openResume(resume.id);
-        //           }}
-        //         >
-        //           {isLargerThan550 ? 'Open Resume' : <MdOpenInNew />}
-        //         </Button>
-        //         <Button
-        //           backgroundColor='blue.500'
-        //           color='white'
-        //           size="sm"
-        //           onClick={(e) => {
-        //             e.stopPropagation();
-        //             toggleExpand(); // Toggle the expanded state
-        //           }}
-        //         >
-        //           {isLargerThan550 ? 'Portfolio Links' : <MdOpenInNew />}
-        //         </Button>
-        //       </HStack>
-        //     </GridItem>
-        //   </Grid>
-          
-        //   {/* Conditionally render additional buttons if expanded */}
-        //   {isExpanded && (
-        //     <HStack spacing={2} marginTop={2}>
-        //       <Button
-        //         backgroundColor='blue.500'
-        //         color='white'
-        //         size="sm"
-        //         onClick={(e) => {
-        //           e.stopPropagation();
-        //           // Handle additional button 1 click
-        //         }}
-        //       >
-        //         Additional Button 1
-        //       </Button>
-        //       <Button
-        //         backgroundColor='blue.500'
-        //         color='white'
-        //         size="sm"
-        //         onClick={(e) => {
-        //           e.stopPropagation();
-        //           // Handle additional button 2 click
-        //         }}
-        //       >
-        //         Additional Button 2
-        //       </Button>
-        //       <Button
-        //         backgroundColor='blue.500'
-        //         color='white'
-        //         size="sm"
-        //         onClick={(e) => {
-        //           e.stopPropagation();
-        //           // Handle additional button 3 click
-        //         }}
-        //       >
-        //         Additional Button 3
-        //       </Button>
-        //       <Button
-        //         backgroundColor='blue.500'
-        //         color='white'
-        //         size="sm"
-        //         onClick={(e) => {
-        //           e.stopPropagation();
-        //           // Handle additional button 4 click
-        //         }}
-        //       >
-        //         Additional Button 4
-        //       </Button>
-        //     </HStack>
-        //   )}
-        // </Box>
-        // );
-        })}
+      {loading ? (
+        <Stack spacing={1} mt={1} w="100%">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <Skeleton
+              key={i}
+              height="80px" // roughly the height of a ResumeListBox row
+              borderRadius="lg"
+            />
+          ))}
+        </Stack>
+      ) : (
+        <VStack w="100%" gap={0} minW="600px" h="100%" overflowY="auto">
+          {resumes.map((resume) => {
+            return (
+              <ResumeListBox
+                resume={resume}
+                key={resume.id}
+                isSelected={selectedResumes.includes(resume.id)}
+                screenIsLarge={screenIsLarge}
+                screenIsLargeButton={screenIsLargeButton}
+                openResume={openResume}
+                toggleResume={toggleResume}
+                baseColor={baseColor}
+                bgColor={bgColor}
+              />
+            );
+          })}
+        </VStack>
+      )}
     </VStack>
   );
-}
+};
 
 export default ResumeList;

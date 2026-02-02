@@ -1,25 +1,28 @@
-import React from 'react';
-import { Box, Grid, GridItem, VStack, Text, Button } from '@chakra-ui/react';
-import { MdOpenInNew } from 'react-icons/md';
-import { Resume } from './ResumeBook';
-
-interface ColumnWidths {
-  checkbox: number;
-  name: number;
-  major: number;
-  degree: number;
-  graduationYear: number;
-  actions: number;
-  data: number;
-}
+import {
+  Box,
+  Checkbox,
+  Grid,
+  GridItem,
+  HStack,
+  IconButton,
+  Image,
+  Text,
+  Tooltip,
+  VStack
+} from "@chakra-ui/react";
+import React from "react";
+import { FaFilePdf } from "react-icons/fa6";
+import PortfolioLinks from "../components/PortfolioLink";
+import { Config } from "../config";
+import { Resume } from "./ResumeBook";
 
 interface ResumeComponentProps {
   resume: Resume;
   isSelected: boolean;
-  columnWidths: ColumnWidths;
-  isLargerThan700: boolean;
-  toggleResume: (id: string) => void;
-  openResume: (id: string) => void;
+  screenIsLarge: boolean;
+  screenIsLargeButton: boolean;
+  openResume: (resume: Resume) => void;
+  toggleResume: (resumeId: string) => void;
   baseColor: string;
   bgColor: string;
 }
@@ -27,137 +30,200 @@ interface ResumeComponentProps {
 const ResumeListBox: React.FC<ResumeComponentProps> = ({
   resume,
   isSelected,
-  columnWidths,
-  isLargerThan700,
+  screenIsLarge,
   openResume,
+  toggleResume,
   baseColor,
-  bgColor,
+  bgColor
 }) => {
-  // const [isExpanded, setIsExpanded] = useState(false);
-
-  // const toggleExpand = () => {
-  //   setIsExpanded(!isExpanded);
-  // };
-
   return (
-    <Box 
-          key={resume.userId}
-          borderWidth='2px'
-          padding='10px'
-          background={isSelected ? 'blue.' + baseColor : bgColor}
-          borderRadius="lg" 
-          overflow="hidden"
-          marginTop='1'
-          boxShadow="md"
-          position="relative"
-          cursor="pointer"
-          _hover={{ background: isSelected ? 'blue.' + (parseInt(baseColor) + 100) : 'gray.' + (parseInt(baseColor) > 500 ? parseInt(baseColor) - 100 : parseInt(baseColor) + 100), boxShadow: 'lg' }}
-          borderColor={isSelected ? 'blue.500' : 'gray.' + baseColor}
-          onClick={(e) => {
-            e.stopPropagation();
-            openResume(resume.userId);
-          }}
-          transition="all 0.2s ease"
-        >
-          <Grid templateColumns={
-              isLargerThan700
-              ? `${columnWidths.name}px ${columnWidths.degree}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
-              : `${columnWidths.data}px ${columnWidths.actions}px`
-          } gap={4} alignItems="center">
-            {/* <GridItem>
-              <HStack>
-                <Checkbox 
-                  size="lg"
-                  isChecked={isSelected}
-                  onChange={() => toggleResume(resume.userId)}
-                  borderColor={'gray.400'}
+    <Box
+      key={resume.id}
+      padding="10px"
+      pr="20px"
+      background={isSelected ? "blue." + baseColor : bgColor}
+      overflow="visible"
+      position="relative"
+      cursor="pointer"
+      borderBottom={"1px solid"}
+      borderColor={"gray.300"}
+      py={screenIsLarge ? 3 : 2}
+      w="100%"
+      minH="fit-content"
+      _hover={{
+        background: isSelected ? "blue.300" : "gray.200"
+      }}
+      onClick={() => {
+        toggleResume(resume.id);
+      }}
+      transition="all 0.2s ease"
+    >
+      <Grid
+        templateColumns={
+          screenIsLarge
+            ? "80px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1.2fr) 100px"
+            : "60px minmax(0, 1.5fr) minmax(0, 1fr) 100px"
+        }
+        gap={4}
+        alignItems="center"
+        overflow="hidden"
+      >
+        <GridItem>
+          <HStack gap={4} justifyContent={"space-between"} pr={1}>
+            <Checkbox
+              size="lg"
+              isChecked={isSelected}
+              onChange={() => toggleResume(resume.id)}
+              borderColor={"gray.400"}
+            />
+            {Config.STAFF_UIDs.includes(resume.id) && (
+              <Tooltip label="Staff Member" fontSize="md">
+                <Image
+                  src="/rp_logo.svg"
+                  width="20px"
+                  height="20px"
+                  opacity={0.8}
                 />
-                {/* {Config.STAFF_UIDs.includes(resume.id) && (
-                  <Tooltip label="Staff Member" fontSize="md">
-                    <Image src="/2024_rp_logo.svg" width='20px' height='20px' />
-                  </Tooltip>
-                )} }
-              </HStack>
-            </GridItem> */}
-            {isLargerThan700 ? (
-              <>
-                <GridItem>
-                  <Text fontWeight="bold" fontSize="lg">{resume.legalName}</Text>
-                </GridItem>
-                <GridItem>
-                  <Text color="gray.500" fontSize="sm">{resume.degree}</Text>
-                </GridItem>
-                <GridItem>
-                  <Text color="gray.500" fontSize="sm">{resume.major}</Text>
-                </GridItem>
-                <GridItem>
-                  <Text color="gray.500" fontSize="sm">{resume.gradYear.toString()}</Text>
-                </GridItem>
-              </>
-            ) : (
-              <GridItem>
-                <VStack align="start" spacing={1}>
-                  <Text fontWeight="bold" fontSize="lg">{resume.legalName}</Text>
-                  <Text color="gray.500" fontSize="sm">{resume.degree}</Text>
-                  <Text color="gray.500" fontSize="sm">{resume.major}</Text>
-                  <Text color="gray.500" fontSize="sm">{resume.gradYear.toString()}</Text>
-                </VStack>
-              </GridItem>
+              </Tooltip>
             )}
-            <GridItem zIndex='5'>
-              <VStack spacing={2}>
-                <Button
-                  color='blue.500'
-                  backgroundColor='gray.200'
-                  size="md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openResume(resume.userId);
-                  }}
-                >
-                  {isLargerThan700 ? 'Open Resume' : <MdOpenInNew />}
-                </Button>
+          </HStack>
+        </GridItem>
+        {screenIsLarge ? (
+          <>
+            <GridItem>
+              <Text
+                fontWeight="bold"
+                fontSize={{
+                  base: "sm",
+                  lg: "md"
+                }}
+              >
+                {resume.name}
+              </Text>
+            </GridItem>
+            <GridItem>
+              <Text
+                color="gray.700"
+                fontSize={{
+                  base: "sm",
+                  lg: "md"
+                }}
+              >
+                {resume.degree}
+              </Text>
+            </GridItem>
+            <GridItem>
+              <VStack alignItems="flex-start" gap={0}>
+                {resume.majors.map((major) => (
+                  <Text
+                    key={major}
+                    color="gray.700"
+                    fontSize={{ base: "sm", lg: "md" }}
+                  >
+                    {major}
+                    <Text
+                      as="span"
+                      color="gray.500"
+                      fontSize="sm"
+                    >{` (Major)`}</Text>
+                  </Text>
+                ))}
+                {resume.minors.map((minor) => (
+                  <Text
+                    key={minor}
+                    color="gray.700"
+                    fontSize={{ base: "sm", lg: "md" }}
+                  >
+                    {minor}
+                    <Text
+                      as="span"
+                      color="gray.500"
+                      fontSize="sm"
+                    >{` (Minor)`}</Text>
+                  </Text>
+                ))}
               </VStack>
             </GridItem>
-          </Grid>
-          
-          {/* Conditionally render additional buttons if expanded */}
-          {/* {isExpanded && (
-            <Center>
-              <SimpleGrid
-                columns={{ base: 2, md: 3, lg: 5 }} // Use 2 columns on small screens, up to 5 columns on large screens
-                spacing={2}
-                marginTop={2}
-                maxWidth={'90vw'}
-                minChildWidth="120px" // Ensures that items are evenly distributed
-                justifyContent="center" // Centers the items when they don't fill all columns
+            <GridItem>
+              <Text
+                color="gray.700"
+                fontSize={{
+                  base: "sm",
+                  lg: "md"
+                }}
               >
-              {resume.portfolios &&
-                resume.portfolios.map((link) => {
-                  const url = new URL(link);
-                  const displayURL = url.hostname;
-                  return (
-                    <Button
-                      key={link}
-                      backgroundColor={'gray.'+baseColor}
-                      _hover={{ backgroundColor: 'gray.'+(parseInt(baseColor) > 500 ? parseInt(baseColor) - 100 : parseInt(baseColor) + 100) }}
-                      color={'blue.500'}
-                      border={'1px solid black'}
-                      fontSize={'12px'}
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open(link, '_blank');
-                      }}
-                    >
-                      {displayURL}
-                    </Button>
-                  );
-                })}
-              </SimpleGrid>
-            </Center>
-          )} */}
-        </Box>
+                {resume.graduationYear}
+              </Text>
+            </GridItem>
+          </>
+        ) : (
+          <GridItem>
+            <VStack align="start" spacing={1}>
+              <Text fontWeight="bold" fontSize="lg">
+                {resume.name}
+              </Text>
+              <Text color="gray.700" fontSize="sm">
+                {resume.degree} - {resume.graduationYear}
+              </Text>
+
+              <VStack alignItems="flex-start" gap={0}>
+                {resume.majors.map((major) => (
+                  <Text key={major} color="gray.570" fontSize={"sm"}>
+                    {`${major} ${resume.minors.length > 0 ? "(Major)" : ""}`}
+                  </Text>
+                ))}
+                {resume.minors.map((minor) => (
+                  <Text key={minor} color="gray.570" fontSize={"sm"}>
+                    {`${minor} (Minor)`}
+                  </Text>
+                ))}
+              </VStack>
+            </VStack>
+          </GridItem>
+        )}
+        <GridItem zIndex="5" overflow="visible">
+          <PortfolioLinks resume={resume} isMediumScreen={screenIsLarge} />
+        </GridItem>
+        <GridItem zIndex="5" overflow="visible">
+          <HStack spacing={2} overflow="visible">
+            <Tooltip
+              label={"Preview Resume"}
+              placement="top"
+              hasArrow
+              bg="gray.700"
+              color="white"
+              fontSize="md"
+              borderRadius="md"
+              p={1}
+              px={2}
+              zIndex="999"
+            >
+              <IconButton
+                backgroundColor="blue.500"
+                w={"100%"}
+                mx={screenIsLarge ? "auto" : ""}
+                color="white"
+                size={
+                  screenIsLarge
+                    ? {
+                        base: "sm",
+                        lg: "lg"
+                      }
+                    : "md"
+                }
+                _hover={{ color: "gray.700", backgroundColor: "blue.400" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openResume(resume);
+                }}
+                aria-label=""
+                icon={<FaFilePdf />}
+              />
+            </Tooltip>
+          </HStack>
+        </GridItem>
+      </Grid>
+    </Box>
   );
 };
 
