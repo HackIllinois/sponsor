@@ -264,10 +264,10 @@ const ResumePopupModal = ({
                   ) : (
                     <>
                       <HStack spacing={2}>
-                        <PortfolioLinks
+                        {/* <PortfolioLinks
                           resume={resume}
                           showPlaceholders={false}
-                        />
+                        /> */}
                         <IconButton
                           display={{
                             base: "none",

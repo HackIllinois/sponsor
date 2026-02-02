@@ -1,14 +1,14 @@
 import { RESUMES_PER_PAGE } from "../routes/constants";
 import { Resume } from "../routes/ResumeBook";
 import { SingleCol } from "../routes/ResumeList";
-import { formatMajorsMinors } from "../util/natural-stringify-list";
+// import { formatMajorsMinors } from "../util/natural-stringify-list";
 import {
   api,
   educationLevels,
-  employmentOpportunities,
+//   employmentOpportunities,
   graduationDates,
   majors,
-  minors
+//   minors
 } from "../index";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
@@ -27,12 +27,12 @@ export function useResumeDataPaginationHook({
   const [resumes, setResumes] = useState<Resume[]>([]);
 
   const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
-  const [selectedMinors, setSelectedMinors] = useState<string[]>([]);
+//   const [selectedMinors, setSelectedMinors] = useState<string[]>([]);
   const [selectedDegrees, setSelectedDegrees] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
-  const [selectedJobInterests, setSelectedJobInterests] = useState<string[]>(
-    []
-  );
+//   const [selectedJobInterests, setSelectedJobInterests] = useState<string[]>(
+//     []
+//   );
 
   const [queryName, setQueryName] = useState("");
   const [sortByColumn, setSortByColumn] = useState<SingleCol | undefined>(
@@ -56,10 +56,10 @@ export function useResumeDataPaginationHook({
 
   const getResumesFiltered = (filterBy: {
     major: boolean;
-    minor: boolean;
+    // minor: boolean;
     degree: boolean;
     graduationYear: boolean;
-    jobInterest: boolean;
+    // jobInterest: boolean;
     filterName?: string;
     sortCol?: SingleCol;
     sortDirection?: "asc" | "desc";
@@ -67,18 +67,18 @@ export function useResumeDataPaginationHook({
     const lowerCasedSelectedMajors = new Set(
       selectedMajors.map((major) => major.toLowerCase())
     );
-    const lowerCasedSelectedMinors = new Set(
-      selectedMinors.map((minor) => minor.toLowerCase())
-    );
+    // const lowerCasedSelectedMinors = new Set(
+    //   selectedMinors.map((minor) => minor.toLowerCase())
+    // );
     const lowerCasedSelectedDegrees = new Set(
       selectedDegrees.map((degree) => degree.toLowerCase())
     );
     const lowerCasedSelectedYears = new Set(
       selectedYears.map((year) => year.toLowerCase())
     );
-    const lowerCasedSelectedJobInterests = new Set(
-      selectedJobInterests.map((jobInterest) => jobInterest.toLowerCase())
-    );
+    // const lowerCasedSelectedJobInterests = new Set(
+    //   selectedJobInterests.map((jobInterest) => jobInterest.toLowerCase())
+    // );
 
     return resumes
       .filter((resume) => {
@@ -87,28 +87,39 @@ export function useResumeDataPaginationHook({
         // - If only one of the major or minor filter is applied, that one must match.
         // - If neither is applied, all resumes are included.
 
+        // const matchesMajor =
+        //   !filterBy.major ||
+        //   (resume.majors &&
+        //     resume.majors.some((m) =>
+        //       lowerCasedSelectedMajors.has(m.toLowerCase())
+        //     ));
+        // 
         const matchesMajor =
-          !filterBy.major ||
-          (resume.majors &&
-            resume.majors.some((m) =>
-              lowerCasedSelectedMajors.has(m.toLowerCase())
-            ));
+        !filterBy.major ||
+        (resume.major && lowerCasedSelectedMajors.has(resume.major.toLowerCase()));
 
-        const matchesMinor =
-          !filterBy.minor ||
-          (resume.minors &&
-            resume.minors.some((m) =>
-              lowerCasedSelectedMinors.has(m.toLowerCase())
-            ));
+        // const matchesMinor =
+        //   !filterBy.minor ||
+        //   (resume.minors &&
+        //     resume.minors.some((m) =>
+        //       lowerCasedSelectedMinors.has(m.toLowerCase())
+        //     ));
 
-        let majorOrMinorMatch = true;
-        if (selectedMajors.length > 0 && selectedMinors.length > 0) {
-          majorOrMinorMatch = matchesMajor || matchesMinor;
-        } else if (selectedMajors.length > 0) {
-          majorOrMinorMatch = matchesMajor;
-        } else if (selectedMinors.length > 0) {
-          majorOrMinorMatch = matchesMinor;
-        }
+        // let majorOrMinorMatch = true;
+        // if (selectedMajors.length > 0 
+        //     && selectedMinors.length > 0
+        // ) {
+        //   majorOrMinorMatch = matchesMajor 
+        //   || matchesMinor;
+        // } else if (selectedMajors.length > 0) {
+        //   majorOrMinorMatch = matchesMajor;
+        // } 
+        // else if (selectedMinors.length > 0) {
+        //   majorOrMinorMatch = matchesMinor;
+        // }
+
+        const majorOrMinorMatch =
+  selectedMajors.length === 0 || matchesMajor;
 
         const matchesDegree =
           selectedDegrees.length === 0 ||
@@ -120,20 +131,25 @@ export function useResumeDataPaginationHook({
           (resume.graduationYear &&
             lowerCasedSelectedYears.has(resume.graduationYear.toLowerCase()));
 
-        const matchesJobInterest =
-          selectedJobInterests.length === 0 ||
-          (resume.jobInterest &&
-            resume.jobInterest.some((interest) =>
-              lowerCasedSelectedJobInterests.has(interest.toLowerCase())
-            ));
+        // const matchesJobInterest =
+        //   selectedJobInterests.length === 0 ||
+        //   (resume.jobInterest &&
+        //     resume.jobInterest.some((interest) =>
+        //       lowerCasedSelectedJobInterests.has(interest.toLowerCase())
+        //     ));
 
         return (
           majorOrMinorMatch &&
           (matchesDegree || !filterBy.degree) &&
           (matchesYear || !filterBy.graduationYear) &&
-          (matchesJobInterest || !filterBy.jobInterest) &&
-          (filterBy.filterName
-            ? resume.name
+        //   (matchesJobInterest || !filterBy.jobInterest) &&
+        //   (filterBy.filterName
+        //     ? resume.name
+        //         .toLowerCase()
+        //         .includes(filterBy.filterName.toLowerCase())
+        //     : true)
+        (filterBy.filterName
+            ? `${resume.firstName} ${resume.lastName}`
                 .toLowerCase()
                 .includes(filterBy.filterName.toLowerCase())
             : true)
@@ -161,8 +177,10 @@ export function useResumeDataPaginationHook({
             bValue = moment(bValue as string);
           }
           if (filterBy.sortCol === "fieldsOfStudy") {
-            aValue = formatMajorsMinors(a.majors, a.minors);
-            bValue = formatMajorsMinors(b.majors, b.minors);
+            // aValue = formatMajorsMinors(a.majors, a.minors);
+            // bValue = formatMajorsMinors(b.majors, b.minors);
+            aValue = a.major;
+            bValue = b.major;
           }
 
           if (aValue === null || aValue === undefined) return 1;
@@ -195,10 +213,10 @@ export function useResumeDataPaginationHook({
   const allFilteredResumes = useMemo(() => {
     return getResumesFiltered({
       major: true,
-      minor: true,
+    //   minor: true,
       degree: true,
       graduationYear: true,
-      jobInterest: true,
+    //   jobInterest: true,
       sortCol: sortByColumn,
       sortDirection: sortDirection,
       filterName: queryName
@@ -206,10 +224,10 @@ export function useResumeDataPaginationHook({
   }, [
     resumes,
     selectedMajors,
-    selectedMinors,
+    // selectedMinors,
     selectedDegrees,
     selectedYears,
-    selectedJobInterests,
+    // selectedJobInterests,
     sortByColumn,
     sortDirection,
     queryName
@@ -218,21 +236,29 @@ export function useResumeDataPaginationHook({
   const majorToMajorWithCount = useMemo(() => {
     const filteredResumes = getResumesFiltered({
       major: false,
-      minor: false,
+    //   minor: false,
       degree: true,
       graduationYear: true,
-      jobInterest: true
+    //   jobInterest: true
     });
 
+    // const majorCounts = filteredResumes.reduce(
+    //   (acc, resume) => {
+    //     resume.majors?.forEach((major) => {
+    //       acc[major] = (acc[major] || 0) + 1;
+    //     });
+    //     return acc;
+    //   },
+    //   {} as Record<string, number>
+    // );
+
     const majorCounts = filteredResumes.reduce(
-      (acc, resume) => {
-        resume.majors?.forEach((major) => {
-          acc[major] = (acc[major] || 0) + 1;
-        });
-        return acc;
-      },
-      {} as Record<string, number>
-    );
+        (acc, resume) => {
+        if (resume.major) {
+            acc[resume.major] = (acc[resume.major] || 0) + 1;
+        }
+    return acc;
+    }, {} as Record<string, number>);
 
     return majors.reduce(
       (acc, major) => {
@@ -248,46 +274,46 @@ export function useResumeDataPaginationHook({
     );
   }, [allFilteredResumes]);
 
-  const minorToMinorWithCount = useMemo(() => {
-    const filteredResumes = getResumesFiltered({
-      major: false,
-      minor: false,
-      degree: true,
-      graduationYear: true,
-      jobInterest: true
-    });
+//   const minorToMinorWithCount = useMemo(() => {
+//     const filteredResumes = getResumesFiltered({
+//       major: false,
+//       minor: false,
+//       degree: true,
+//       graduationYear: true,
+//       jobInterest: true
+//     });
 
-    const minorCounts = filteredResumes.reduce(
-      (acc, resume) => {
-        resume.minors?.forEach((minor) => {
-          acc[minor] = (acc[minor] || 0) + 1;
-        });
-        return acc;
-      },
-      {} as Record<string, number>
-    );
+//     const minorCounts = filteredResumes.reduce(
+//       (acc, resume) => {
+//         resume.minors?.forEach((minor) => {
+//           acc[minor] = (acc[minor] || 0) + 1;
+//         });
+//         return acc;
+//       },
+//       {} as Record<string, number>
+//     );
 
-    return minors.reduce(
-      (acc, minor) => {
-        if (!minorCounts[minor]) {
-          return acc;
-        }
-        return {
-          ...acc,
-          [minor]: `${minor} (${minorCounts[minor]})`
-        };
-      },
-      {} as Record<string, string>
-    );
-  }, [allFilteredResumes]);
+//     return minors.reduce(
+//       (acc, minor) => {
+//         if (!minorCounts[minor]) {
+//           return acc;
+//         }
+//         return {
+//           ...acc,
+//           [minor]: `${minor} (${minorCounts[minor]})`
+//         };
+//       },
+//       {} as Record<string, string>
+//     );
+//   }, [allFilteredResumes]);
 
   const degreesWithCounts = useMemo(() => {
     const filteredResumes = getResumesFiltered({
       major: true,
-      minor: true,
+    //   minor: true,
       degree: false,
       graduationYear: true,
-      jobInterest: true
+    //   jobInterest: true
     });
 
     const degreeCounts = filteredResumes.reduce(
@@ -317,10 +343,10 @@ export function useResumeDataPaginationHook({
   const yearsWithCounts = useMemo(() => {
     const filteredResumes = getResumesFiltered({
       major: true,
-      minor: true,
+    //   minor: true,
       degree: true,
       graduationYear: false,
-      jobInterest: true
+    //   jobInterest: true
     });
 
     const yearCounts = filteredResumes.reduce(
@@ -346,39 +372,39 @@ export function useResumeDataPaginationHook({
     );
   }, [allFilteredResumes]);
 
-  const jobInterestsWithCounts = useMemo(() => {
-    const filteredResumes = getResumesFiltered({
-      major: true,
-      minor: true,
-      degree: true,
-      graduationYear: true,
-      jobInterest: false
-    });
+//   const jobInterestsWithCounts = useMemo(() => {
+//     const filteredResumes = getResumesFiltered({
+//       major: true,
+//       minor: true,
+//       degree: true,
+//       graduationYear: true,
+//       jobInterest: false
+//     });
 
-    const jobInterestCounts = filteredResumes.reduce(
-      (acc, resume) => {
-        resume.jobInterest?.forEach((interest) => {
-          acc[interest] = (acc[interest] || 0) + 1;
-        });
-        return acc;
-      },
-      {} as Record<string, number>
-    );
+//     const jobInterestCounts = filteredResumes.reduce(
+//       (acc, resume) => {
+//         resume.jobInterest?.forEach((interest) => {
+//           acc[interest] = (acc[interest] || 0) + 1;
+//         });
+//         return acc;
+//       },
+//       {} as Record<string, number>
+//     );
 
-    return employmentOpportunities.reduce(
-      (acc, interest) => {
-        if (!jobInterestCounts[interest]) {
-          return acc;
-        }
+//     return employmentOpportunities.reduce(
+//       (acc, interest) => {
+//         if (!jobInterestCounts[interest]) {
+//           return acc;
+//         }
 
-        return {
-          ...acc,
-          [interest]: `${interest} (${jobInterestCounts[interest] || 0})`
-        };
-      },
-      {} as Record<string, string>
-    );
-  }, [allFilteredResumes]);
+//         return {
+//           ...acc,
+//           [interest]: `${interest} (${jobInterestCounts[interest] || 0})`
+//         };
+//       },
+//       {} as Record<string, string>
+//     );
+//   }, [allFilteredResumes]);
 
   const pageSize = useMemo(() => {
     return Math.ceil(allFilteredResumes.length / RESUMES_PER_PAGE);
@@ -425,19 +451,27 @@ export function useResumeDataPaginationHook({
     setLoading(true);
     setResumes([]);
     api
-      .get("/registration/all")
+      .post("/sponsor/resumebook/1/", {
+        graduations: [],
+        majors: [],
+        degrees: []
+        })
       .then(function (response) {
         let resumes = response.data.map(
           (registrant) =>
             ({
+                email: registrant.email,
               id: registrant.userId,
-              name: registrant.name,
-              majors: registrant.majors,
-              minors: registrant.minors,
-              degree: registrant.educationLevel,
-              graduationYear: registrant.graduationYear,
-              jobInterest: registrant.opportunities,
-              portfolios: registrant.personalLinks
+            //   name: registrant.name,
+            firstName: registrant.firstName,
+            lastName: registrant.lastName,
+            school: registrant.school,
+              major: registrant.major,
+            //   minors: registrant.minors,
+              degree: registrant.education,
+              graduationYear: registrant.graduate,
+            //   jobInterest: registrant.opportunities,
+            //   portfolios: registrant.personalLinks
             }) as Resume
         );
 
@@ -482,10 +516,10 @@ export function useResumeDataPaginationHook({
     resumeSelectionAndDownloadHook.resetSelectedResumes();
   }, [
     selectedMajors,
-    selectedMinors,
+    // selectedMinors,
     selectedDegrees,
     selectedYears,
-    selectedJobInterests
+    // selectedJobInterests
   ]);
 
   const filteredResumes = useMemo(() => {
@@ -527,21 +561,21 @@ export function useResumeDataPaginationHook({
     filtering: {
       queryName,
       selectedMajors,
-      selectedMinors,
+    //   selectedMinors,
       selectedYears,
       selectedDegrees,
       majorToMajorWithCount,
-      minorToMinorWithCount,
+    //   minorToMinorWithCount,
       degreesWithCounts,
       yearsWithCounts,
-      selectedJobInterests,
-      jobInterestsWithCounts,
+    //   selectedJobInterests,
+    //   jobInterestsWithCounts,
       setQueryName,
       setSelectedMajors,
-      setSelectedMinors,
+    //   setSelectedMinors,
       setSelectedDegrees,
       setSelectedYears,
-      setSelectedJobInterests
+    //   setSelectedJobInterests
     },
     selection: {
       selectedResumes: resumeSelectionAndDownloadHook.selectedResumes,

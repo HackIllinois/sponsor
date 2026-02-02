@@ -10,8 +10,8 @@ import {
   educationLevels,
   graduationDates,
   majors,
-  minors,
-  employmentOpportunities
+  // minors,
+  // employmentOpportunities
 } from "../index";
 import { FaFilter } from "react-icons/fa";
 
@@ -20,37 +20,37 @@ export type FilterModalProps = {
   filtering: {
     selectedMajors: string[];
     majorToMajorWithCount: Record<string, string>;
-    selectedMinors: string[];
-    minorToMinorWithCount: Record<string, string>;
+    // selectedMinors: string[];
+    // minorToMinorWithCount: Record<string, string>;
     selectedDegrees: string[];
     degreesWithCounts: Record<string, string>;
     selectedYears: string[];
     yearsWithCounts: Record<string, string>;
-    selectedJobInterests: string[];
-    jobInterestsWithCounts: Record<string, string>;
+    // selectedJobInterests: string[];
+    // jobInterestsWithCounts: Record<string, string>;
     setSelectedMajors: (majors: string[]) => void;
-    setSelectedMinors: (minors: string[]) => void;
+    // setSelectedMinors: (minors: string[]) => void;
     setSelectedDegrees: (degrees: string[]) => void;
     setSelectedYears: (years: string[]) => void;
-    setSelectedJobInterests: (jobInterests: string[]) => void;
+    // setSelectedJobInterests: (jobInterests: string[]) => void;
   };
 };
 
 export function FilterModal(props: FilterModalProps) {
   const handleClear = () => {
     props.filtering.setSelectedMajors([]);
-    props.filtering.setSelectedMinors([]);
+    // props.filtering.setSelectedMinors([]);
     props.filtering.setSelectedDegrees([]);
     props.filtering.setSelectedYears([]);
-    props.filtering.setSelectedJobInterests([]);
+    // props.filtering.setSelectedJobInterests([]);
   };
 
   const anySelectedFilters =
     props.filtering.selectedMajors.length > 0 ||
-    props.filtering.selectedMinors.length > 0 ||
+    // props.filtering.selectedMinors.length > 0 ||
     props.filtering.selectedDegrees.length > 0 ||
-    props.filtering.selectedYears.length > 0 ||
-    props.filtering.selectedJobInterests.length > 0;
+    props.filtering.selectedYears.length > 0 
+    // || props.filtering.selectedJobInterests.length > 0;
   return (
     <Popover>
       <PopoverTrigger>
@@ -82,7 +82,7 @@ export function FilterModal(props: FilterModalProps) {
             placeholderText="Filter Major(s)"
             hideOptionIfNoDisplayedOptionAvailable
           />
-          <MultiSelectDropdown
+          {/* <MultiSelectDropdown
             id="minor-dropdown"
             width="100%"
             options={minors}
@@ -91,7 +91,7 @@ export function FilterModal(props: FilterModalProps) {
             onSelectionChange={props.filtering.setSelectedMinors}
             placeholderText="Filter Minor(s)"
             hideOptionIfNoDisplayedOptionAvailable
-          />
+          /> */}
           <MultiSelectDropdown
             id="degree-dropdown"
             width="100%"
@@ -112,7 +112,7 @@ export function FilterModal(props: FilterModalProps) {
             placeholderText="Filter Year(s)"
             hideOptionIfNoDisplayedOptionAvailable
           />
-          <MultiSelectDropdown
+          {/* <MultiSelectDropdown
             id="job-dropdown"
             width="100%"
             options={employmentOpportunities}
@@ -121,7 +121,7 @@ export function FilterModal(props: FilterModalProps) {
             onSelectionChange={props.filtering.setSelectedJobInterests}
             placeholderText="Filter Role Interest(s)"
             hideOptionIfNoDisplayedOptionAvailable
-          />
+          /> */}
           <Button
             colorScheme="red"
             variant="outline"

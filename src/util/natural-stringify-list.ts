@@ -18,8 +18,8 @@ export function naturalStringifyList(items: string[]): string {
   return `${allButLast}, and ${last}`;
 }
 
-export function formatMajorsMinors(majors: string[], minors: string[]): string {
-  const majorLines = majors.map((m) => `${m} (Major)`);
-  const minorLines = minors.map((m) => `${m} (Minor)`);
-  return [...majorLines, ...minorLines].join(", ");
-}
+// export function formatMajorsMinors(majors: string[], minors: string[]): string {
+//   const majorLines = majors.map((m) => `${m} (Major)`);
+//   const minorLines = minors.map((m) => `${m} (Minor)`);
+//   return [...majorLines, ...minorLines].join(", ");
+// }

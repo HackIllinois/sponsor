@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { FaFilePdf } from "react-icons/fa6";
-import PortfolioLinks from "../components/PortfolioLink";
+// import PortfolioLinks from "../components/PortfolioLink";
 import { Config } from "../config";
 import { Resume } from "./ResumeBook";
 
@@ -61,8 +61,8 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
       <Grid
         templateColumns={
           screenIsLarge
-            ? "80px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1.2fr) 100px"
-            : "60px minmax(0, 1.5fr) minmax(0, 1fr) 100px"
+            ? "80px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr) 100px"
+            : "60px minmax(0, 1.5fr) 100px"
         }
         gap={4}
         alignItems="center"
@@ -98,7 +98,8 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
                   lg: "md"
                 }}
               >
-                {resume.name}
+                {/* {resume.name} */}
+                {`${resume.firstName ?? ""} ${resume.lastName ?? ""}`}
               </Text>
             </GridItem>
             <GridItem>
@@ -114,7 +115,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
             </GridItem>
             <GridItem>
               <VStack alignItems="flex-start" gap={0}>
-                {resume.majors.map((major) => (
+                {/* {resume.majors.map((major) => (
                   <Text
                     key={major}
                     color="gray.700"
@@ -127,8 +128,17 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
                       fontSize="sm"
                     >{` (Major)`}</Text>
                   </Text>
-                ))}
-                {resume.minors.map((minor) => (
+                ))} */}
+
+
+                   <Text color="gray.700" fontSize={{ base: "sm", lg: "md" }}>
+        {resume.major}
+        <Text as="span" color="gray.500" fontSize="sm">
+          {" (Major)"}
+        </Text>
+      </Text>
+
+                {/* {resume.minors.map((minor) => (
                   <Text
                     key={minor}
                     color="gray.700"
@@ -141,7 +151,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
                       fontSize="sm"
                     >{` (Minor)`}</Text>
                   </Text>
-                ))}
+                ))} */}
               </VStack>
             </GridItem>
             <GridItem>
@@ -160,30 +170,37 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
           <GridItem>
             <VStack align="start" spacing={1}>
               <Text fontWeight="bold" fontSize="lg">
-                {resume.name}
+                {/* {resume.name} */}
+                {`${resume.firstName ?? ""} ${resume.lastName ?? ""}`}
               </Text>
               <Text color="gray.700" fontSize="sm">
                 {resume.degree} - {resume.graduationYear}
               </Text>
 
               <VStack alignItems="flex-start" gap={0}>
-                {resume.majors.map((major) => (
+                {/* {resume.majors.map((major) => (
                   <Text key={major} color="gray.570" fontSize={"sm"}>
                     {`${major} ${resume.minors.length > 0 ? "(Major)" : ""}`}
                   </Text>
-                ))}
-                {resume.minors.map((minor) => (
+                ))} */}
+
+                 <Text color="gray.570" fontSize="sm">
+      {resume.major} (Major)
+    </Text>
+
+
+                {/* {resume.minors.map((minor) => (
                   <Text key={minor} color="gray.570" fontSize={"sm"}>
                     {`${minor} (Minor)`}
                   </Text>
-                ))}
+                ))} */}
               </VStack>
             </VStack>
           </GridItem>
         )}
-        <GridItem zIndex="5" overflow="visible">
-          <PortfolioLinks resume={resume} isMediumScreen={screenIsLarge} />
-        </GridItem>
+        {/* <GridItem zIndex="5" overflow="visible"> */}
+          {/* <PortfolioLinks resume={resume} isMediumScreen={screenIsLarge} /> */}
+        {/* </GridItem> */}
         <GridItem zIndex="5" overflow="visible">
           <HStack spacing={2} overflow="visible">
             <Tooltip

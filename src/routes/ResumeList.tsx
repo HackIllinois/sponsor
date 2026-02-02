@@ -201,14 +201,14 @@ const ResumeList: React.FC<ResumeListProps> = ({
         pr="20px"
         width="100%"
         minW="600px"
-        zIndex="10"
+        // zIndex="10"
         bgColor="gray.300"
       >
         <Grid
           templateColumns={
             screenIsLarge
-              ? "80px 1fr 1fr 1.5fr 1fr 1.2fr 100px"
-              : "60px minmax(0, 1.5fr) minmax(0, 1fr) 100px"
+              ? "80px 1fr 1fr 1.5fr 1fr 100px"
+              : "60px minmax(0, 1.5fr) 100px"
           }
           gap={4}
           alignItems="center"
@@ -250,14 +250,14 @@ const ResumeList: React.FC<ResumeListProps> = ({
                   boxSize={4}
                   onSort={onSortByColumn}
                 />
-                <Column
+                {/* <Column
                   id="links"
                   name="Links"
                   sortColId={sortByColumn}
                   sortDirection={sortDirection}
                   icon={FaGraduationCap}
                   boxSize={4}
-                />
+                /> */}
                 <Column
                   id="resume"
                   name="Resume"
@@ -277,7 +277,7 @@ const ResumeList: React.FC<ResumeListProps> = ({
                   icon={FaUser}
                   onSort={onSortByColumn}
                 />
-                <Column
+                {/* <Column
                   id="links"
                   name="Links"
                   sortColId={sortByColumn}
@@ -285,7 +285,7 @@ const ResumeList: React.FC<ResumeListProps> = ({
                   icon={FaFileDownload}
                   boxSize={4}
                   onSort={onSortByColumn}
-                />
+                /> */}
                 <Column
                   id="resume"
                   name="Resume"

@@ -5,16 +5,16 @@ import { ApiError, TypedAxiosInstance } from "./type-wrapper";
 
 const axiosObject = axios.create({ baseURL: "https://adonix.hackillinois.org" });
 
-// axiosObject.interceptors.request.use((config) => {
-//   const jwt = localStorage.getItem("jwt");
-//   if (jwt) {
-//     config.headers.Authorization = jwt;
-//   } else {
-//     config.headers.Authorization = undefined;
-//   }
+axiosObject.interceptors.request.use((config) => {
+  const jwt = localStorage.getItem("jwt");
+  if (jwt) {
+    config.headers.Authorization = jwt;
+  } else {
+    config.headers.Authorization = undefined;
+  }
 
-//   return config;
-// });
+  return config;
+});
 
 // axiosObject.interceptors.response.use(
 //   (response) => response,

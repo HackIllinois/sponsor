@@ -18,13 +18,16 @@ import { ResumeBookNavbar } from "./ResumeBookNavbar";
 
 export interface Resume {
   id: string;
-  name: string;
-  majors: string[];
-  minors: string[];
+  // name: string;
+  firstName: string;
+  lastName: string;
+  school: string;
+  major: string;
+  // minors: string[];
   degree?: string;
   graduationYear: string | null;
-  jobInterest: Array<string>;
-  portfolios?: Array<string>;
+  // jobInterest: Array<string>;
+  // portfolios?: Array<string>;
 }
 
 export function ResumeBook() {

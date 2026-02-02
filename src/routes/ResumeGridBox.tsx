@@ -9,20 +9,54 @@ import {
   VStack
 } from "@chakra-ui/react";
 import { FaFilePdf } from "react-icons/fa6";
-import PortfolioLinks from "../components/PortfolioLinks";
+// import PortfolioLinks from "../components/PortfolioLinks";
 import { Config } from "../config";
 import { Resume } from "./ResumeBook";
 
 interface MajorsMinorsListProps {
   degreeType?: string;
-  majors: string[];
-  minors: string[];
+  major?: string | null;
+  // minors: string[];
 }
+
+// const MajorsMinorsList: React.FC<MajorsMinorsListProps> = ({
+//   degreeType,
+//   majors,
+//   minors
+// }) => {
+//   return (
+//     <VStack alignItems={"flex-start"} gap={0}>
+//       {degreeType && (
+//         <Text fontSize="sm" color="gray.700" fontWeight={"bold"}>
+//           {degreeType}
+//         </Text>
+//       )}
+//       {majors.map((major) => (
+//         <Text key={major} fontSize="sm" color="gray.700">
+//           {major}{" "}
+//           {
+//             <Text as="span" color="gray.500">
+//               (Major)
+//             </Text>
+//           }
+//         </Text>
+//       ))}
+//       {minors.map((minor) => (
+//         <Text key={minor} fontSize="sm" color="gray.700">
+//           {minor}{" "}
+//           <Text as="span" color="gray.500">
+//             (Minor)
+//           </Text>
+//         </Text>
+//       ))}
+//     </VStack>
+//   );
+// };
+
 
 const MajorsMinorsList: React.FC<MajorsMinorsListProps> = ({
   degreeType,
-  majors,
-  minors
+  major
 }) => {
   return (
     <VStack alignItems={"flex-start"} gap={0}>
@@ -31,24 +65,15 @@ const MajorsMinorsList: React.FC<MajorsMinorsListProps> = ({
           {degreeType}
         </Text>
       )}
-      {majors.map((major) => (
-        <Text key={major} fontSize="sm" color="gray.700">
+
+      {major ? (
+        <Text fontSize="sm" color="gray.700">
           {major}{" "}
-          {
-            <Text as="span" color="gray.500">
-              (Major)
-            </Text>
-          }
-        </Text>
-      ))}
-      {minors.map((minor) => (
-        <Text key={minor} fontSize="sm" color="gray.700">
-          {minor}{" "}
           <Text as="span" color="gray.500">
-            (Minor)
+            (Major)
           </Text>
         </Text>
-      ))}
+      ) : null}
     </VStack>
   );
 };
@@ -103,14 +128,16 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
             </Tooltip>
           )}
           <Text fontWeight="bold" fontSize="lg" maxW={"70%"} my={0}>
-            {resume.name}
+            {/* {resume.name} */}
+            {`${resume.firstName ?? ""} ${resume.lastName ?? ""}`}
           </Text>
         </Flex>
-        <MajorsMinorsList
+        {/* <MajorsMinorsList
           degreeType={resume.degree}
           majors={resume.majors}
           minors={resume.minors}
-        />
+        /> */}
+        <MajorsMinorsList degreeType={resume.degree} major={resume.major} />
         {/* <Text color="gray.500" fontSize="sm" mr="20px">
           {resume.degree} - {formatMajorsMinors(resume.majors, resume.minors)}
         </Text> */}
@@ -119,11 +146,11 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
         </Text>
       </VStack>
       <HStack w="100%" justifyContent="space-between" mt={2}>
-        <PortfolioLinks
+        {/* <PortfolioLinks
           resume={resume}
           showPlaceholders={true}
           isMediumScreen={screenIsLarge}
-        />
+        /> */}
         <IconButton
           aria-label={`View Resume`}
           icon={<FaFilePdf />}
