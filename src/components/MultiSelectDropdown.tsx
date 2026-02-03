@@ -146,7 +146,7 @@ function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionC
                   borderRadius="4px"
                   padding="8px"
                 >
-                  {option.toUpperCase()}
+                  {option}
                 </ListItem>
               ))}
             </List>

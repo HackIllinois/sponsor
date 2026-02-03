@@ -69,9 +69,9 @@ const MajorsMinorsList: React.FC<MajorsMinorsListProps> = ({
       {major ? (
         <Text fontSize="sm" color="gray.700">
           {major}{" "}
-          <Text as="span" color="gray.500">
+          {/* <Text as="span" color="gray.500">
             (Major)
-          </Text>
+          </Text> */}
         </Text>
       ) : null}
     </VStack>

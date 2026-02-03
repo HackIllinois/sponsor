@@ -235,7 +235,7 @@ const ResumeList: React.FC<ResumeListProps> = ({
                 />
                 <Column
                   id="fieldsOfStudy"
-                  name="Fields of Study"
+                  name="Major"
                   sortColId={sortByColumn}
                   sortDirection={sortDirection}
                   icon={FaBook}

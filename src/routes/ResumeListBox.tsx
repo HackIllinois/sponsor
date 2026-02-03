@@ -133,9 +133,9 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
 
                    <Text color="gray.700" fontSize={{ base: "sm", lg: "md" }}>
         {resume.major}
-        <Text as="span" color="gray.500" fontSize="sm">
+        {/* <Text as="span" color="gray.500" fontSize="sm">
           {" (Major)"}
-        </Text>
+        </Text> */}
       </Text>
 
                 {/* {resume.minors.map((minor) => (
@@ -185,7 +185,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
                 ))} */}
 
                  <Text color="gray.570" fontSize="sm">
-      {resume.major} (Major)
+      {resume.major}
     </Text>
 
 
