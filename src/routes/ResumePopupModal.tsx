@@ -26,7 +26,7 @@ import { saveAs } from "file-saver";
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { FaDownload } from "react-icons/fa6";
-import PortfolioLinks from "../components/PortfolioLinks";
+// import PortfolioLinks from "../components/PortfolioLinks";
 import { Resume } from "./ResumeBook";
 
 import React from "react";
@@ -34,8 +34,8 @@ import React from "react";
 interface StudyInfoProps {
   degree?: string;
   graduationYear?: string | null;
-  majors: string[];
-  minors: string[];
+  major: string;
+  // minors: string[];
 }
 
 const Separator = () => (
@@ -47,43 +47,44 @@ const Separator = () => (
 export const StudyInfo: React.FC<StudyInfoProps> = ({
   degree,
   graduationYear,
-  majors,
-  minors
+  major,
+  // minors
 }) => {
-  const hasBoth = majors.length > 0 && minors.length > 0;
+  // const hasBoth = majors.length > 0 && minors.length > 0;
 
-  const nodes: React.ReactNode[] = [];
-  majors.forEach((m, i) => {
-    nodes.push(
-      <Text as="span" key={`maj-${i}`} fontSize="md" color="gray.600">
-        {m}
-        <Text as="span" fontSize="sm" color="gray.500">
-          {" (Major)"}
-        </Text>
-      </Text>
-    );
-    if (i < majors.length - 1) nodes.push(", ");
-  });
-  minors.forEach((m, i) => {
-    if ((majors.length > 0 && i === 0) || i > 0) {
-      nodes.push(", ");
-    }
-    nodes.push(
-      <Text as="span" key={`min-${i}`} fontSize="md" color="gray.600">
-        {m}
-        <Text as="span" fontSize="sm" color="gray.500">
-          {" (Minor)"}
-        </Text>
-      </Text>
-    );
-  });
+  // const nodes: React.ReactNode[] = [];
+  // major.forEach((m, i) => {
+  //   nodes.push(
+  //     <Text as="span" key={`maj-${i}`} fontSize="md" color="gray.600">
+  //       {m}
+  //       <Text as="span" fontSize="sm" color="gray.500">
+  //         {" (Major)"}
+  //       </Text>
+  //     </Text>
+  //   );
+  //   if (i < major.length - 1) nodes.push(", ");
+  // });
+
+  // minors.forEach((m, i) => {
+  //   if ((majors.length > 0 && i === 0) || i > 0) {
+  //     nodes.push(", ");
+  //   }
+  //   nodes.push(
+  //     <Text as="span" key={`min-${i}`} fontSize="md" color="gray.600">
+  //       {m}
+  //       <Text as="span" fontSize="sm" color="gray.500">
+  //         {" (Minor)"}
+  //       </Text>
+  //     </Text>
+  //   );
+  // });
 
   const firstLine: React.ReactNode[] = [];
   if (degree) firstLine.push(degree);
   if (graduationYear) firstLine.push(graduationYear.toString());
-  if (!hasBoth && nodes.length > 0) {
-    firstLine.push(nodes);
-  }
+  // if (!hasBoth && nodes.length > 0) {
+  //   firstLine.push(nodes);
+  // }
 
   return (
     <Box>
@@ -98,11 +99,11 @@ export const StudyInfo: React.FC<StudyInfoProps> = ({
         </Text>
       )}
 
-      {hasBoth && nodes.length > 0 && (
+      {/* {hasBoth && nodes.length > 0 && (
         <Text fontSize="md" color="gray.600">
           {nodes}
         </Text>
-      )}
+      )} */}
     </Box>
   );
 };
@@ -145,9 +146,9 @@ const ResumePopupModal = ({
     if (!resume) {
       return;
     }
-    console.log("resume", resume);
+    // console.log("resume", resume);
     api
-      .get(path("/s3/download/user/:userId", { userId: resume.id }))
+      .get(path("/resume/download/:userId", { userId: resume.id }))
       .then((response) => {
         setResumeUrl(response.data.url);
         setTimeout(() => {
@@ -180,9 +181,12 @@ const ResumePopupModal = ({
 
       saveAs(
         fileResponse.data,
-        resume.name
-          ? `${resume.name}-${resume.graduationYear}.pdf`
-          : "resume.pdf"
+        // resume.name
+          // ? `${resume.name}-${resume.graduationYear}.pdf`
+          // : "resume.pdf"
+          resume.firstName || resume.lastName
+    ? `${resume.firstName} ${resume.lastName}-${resume.graduationYear}.pdf`
+    : "resume.pdf"
       );
     } catch (error) {
       console.error("Download failed:", error);
@@ -190,7 +194,7 @@ const ResumePopupModal = ({
     }
   };
 
-  const hasLinks = resume?.portfolios && resume.portfolios.length > 0;
+  // const hasLinks = resume?.portfolios && resume.portfolios.length > 0;
 
   return (
     <Modal isOpen={resume !== null} onClose={onClose} size="6xl">
@@ -216,7 +220,7 @@ const ResumePopupModal = ({
                   <Flex flexDirection={"column"} w="100%">
                     <HStack alignItems={"center"} gap={2}>
                       <Text fontSize="2xl" fontWeight="bold">
-                        {resume.name}
+                        {resume.firstName + " " + resume.lastName} 
                       </Text>
                       {Config.STAFF_UIDs.includes(resume.id) && (
                         <Tooltip label="Staff Member" fontSize="md">
@@ -232,8 +236,8 @@ const ResumePopupModal = ({
                     <StudyInfo
                       degree={resume.degree}
                       graduationYear={resume.graduationYear}
-                      majors={resume.majors}
-                      minors={resume.minors}
+                      major={resume.major}
+                      // minors={resume.minors}
                     />
                   </Flex>
                   <IconButton
@@ -285,9 +289,12 @@ const ResumePopupModal = ({
                         <Button
                           colorScheme="blue"
                           aria-label="Download Resume"
-                          leftIcon={hasLinks ? undefined : <FaDownload />}
-                          ml={hasLinks ? 1 : undefined}
-                          px={hasLinks ? 2 : 4}
+                          // leftIcon={hasLinks ? undefined : <FaDownload />}
+                          // ml={hasLinks ? 1 : undefined}
+                          // px={hasLinks ? 2 : 4}
+                          // leftIcon={<FaDownload />}
+                          ml={undefined}
+                          px={4}
                           display={{
                             base: "flex",
                             md: "none"
@@ -296,7 +303,8 @@ const ResumePopupModal = ({
                             void handleDownloadResume();
                           }}
                         >
-                          {hasLinks ? <FaDownload /> : "Download Resume"}
+                          {/* {hasLinks ? <FaDownload /> : "Download Resume"} */}
+                          <FaDownload />
                         </Button>
                       )}
                     </>

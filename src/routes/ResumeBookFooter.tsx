@@ -48,7 +48,7 @@ export function ResumeBookFooter({
         }}
       >
         <Text fontSize="sm" color="gray.500">
-          © 2025 HackIllinois 2026
+          © HackIllinois 2026
         </Text>
       </Box>
 

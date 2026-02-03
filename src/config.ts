@@ -24,5 +24,6 @@ export const Config = {
     "194cd6b5-1edf-47ff-b078-998290637fd8",
     "74df0fa3-f102-4e4a-90d0-74745cf52718",
     "23b61c05-ccb7-4971-bb4d-d0fc963088a6"
-  ]
+  ],
+  RESUME_BOOK_URL:"hackillinois.org"
 }

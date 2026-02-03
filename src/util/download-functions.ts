@@ -39,7 +39,7 @@ export async function downloadResumes(
           throw new Error("Resume not found in filteredResumes");
         }
 
-        const fileName = cleanUpName(resume.name) + ".pdf";
+        const fileName = cleanUpName(resume.firstName + " " + resume.lastName) + ".pdf";
         saveAs(fileResponse.data, fileName);
       } catch (error) {
         totalErrorCount++;
@@ -62,7 +62,7 @@ export async function downloadResumes(
             url ?? "",
             { responseType: "blob" }
           );
-          const fileName = cleanUpName(resume.name) + ".pdf";
+          const fileName = cleanUpName(resume.firstName + " " + resume.lastName) + ".pdf";
 
           zip.file(fileName, fileResponse.data);
         } catch (error) {

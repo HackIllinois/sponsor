@@ -16,6 +16,31 @@ axiosObject.interceptors.request.use((config) => {
   return config;
 });
 
+
+axiosObject.interceptors.response.use(
+  (response) => response,
+  (error: ApiError) => {
+    const errorType = error.response?.data?.error;
+    const status = error.response?.status;
+
+    if (
+      status === 401 ||
+      errorType === "NoJWT" ||
+      errorType === "ExpiredJWT" ||
+      errorType === "InvalidJWT"
+    ) {
+      localStorage.removeItem("jwt");
+
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
+
+      return Promise.reject(error);
+    }
+
+    return Promise.reject(error);
+  }
+);
 // axiosObject.interceptors.response.use(
 //   (response) => response,
 //   (error: ApiError) => {

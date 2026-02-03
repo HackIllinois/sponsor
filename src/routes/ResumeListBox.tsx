@@ -79,7 +79,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
             {Config.STAFF_UIDs.includes(resume.id) && (
               <Tooltip label="Staff Member" fontSize="md">
                 <Image
-                  src="/rp_logo.svg"
+                  src="/hackillinois-logo.svg"
                   width="20px"
                   height="20px"
                   opacity={0.8}

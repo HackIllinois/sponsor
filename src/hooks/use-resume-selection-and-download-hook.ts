@@ -17,6 +17,14 @@ export function useResumeSelectionAndDownloadHook({
     setSelectedResumes([]);
   };
 
+  const csvEscape = (value: unknown) => {
+  const s = String(value ?? "");
+  if (/[",\n]/.test(s)) {
+    return `"${s.replace(/"/g, '""')}"`;
+  }
+  return s;
+};
+
   const toggleResume = (id: string) => {
     setSelectedResumes((prev) =>
       prev.includes(id)
@@ -39,7 +47,7 @@ export function useResumeSelectionAndDownloadHook({
 
   const downloadResumesCSV = (selected: boolean = false) => {
     const csvContent = [
-      "Name,Major,Minor,Degree,Graduation Year,Job Interest,Portfolios,Resume Link"
+      "First Name,Last Name,Major,Degree,Graduation Year,Resume Link"
     ]
       .concat(
         allFilteredResumes
@@ -50,19 +58,41 @@ export function useResumeSelectionAndDownloadHook({
             return true;
           })
           .map((resume) => {
-            const portfolios = resume.portfolios
-              ? resume.portfolios.join("; ")
-              : "";
-            return [
-              resume.name,
-              resume.majors.join("; ") || "",
-              resume.minors.join("; ") || "",
+            // const portfolios = resume.portfolios
+            //   ? resume.portfolios.join("; ")
+            //   : "";
+
+            const row = [
+              // resume.name,
+              resume.firstName,
+              resume.lastName,
+              // resume.majors.join("; ") || "",
+              resume.major,
+              // resume.minors.join("; ") || "",
               resume.degree || "",
               resume.graduationYear || "",
-              resume.jobInterest.join("; "),
-              portfolios,
+              // resume.jobInterest.join("; "),
+              // portfolios,
               `${Config.RESUME_BOOK_URL}/resume-book/${resume.id}/download`
-            ].join(",");
+            ].map(csvEscape);
+
+            return row.join(",");
+
+
+          
+            // return [
+            //   // resume.name,
+            //   resume.firstName,
+            //   resume.lastName,
+            //   // resume.majors.join("; ") || "",
+            //   resume.major,
+            //   // resume.minors.join("; ") || "",
+            //   resume.degree || "",
+            //   resume.graduationYear || "",
+            //   // resume.jobInterest.join("; "),
+            //   // portfolios,
+            //   `${Config.RESUME_BOOK_URL}/resume-book/${resume.id}/download`
+            // ].join(",");
           })
       )
       .join("\n");
