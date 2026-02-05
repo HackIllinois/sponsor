@@ -451,11 +451,13 @@ export function useResumeDataPaginationHook({
     setLoading(true);
     setResumes([]);
     api
-      .post("/sponsor/resumebook/1/", {
-        graduations: [],
-        majors: [],
-        degrees: []
-        })
+      .get("/sponsor/resumebook/all"
+        // , {
+        // graduations: [],
+        // majors: [],
+        // degrees: []
+        // }
+      )
       .then(function (response) {
         let resumes = response.data.map(
           (registrant) =>
