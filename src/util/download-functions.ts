@@ -8,15 +8,15 @@ export async function downloadResumes(
   resumes: Resume[],
   selectedResumes: string[]
 ) {
-  let totalErrorCount = 0;
+  // let totalErrorCount = 0;
 
   try {
-    const response = await api.post("/s3/download/batch", {
+    const response = await api.post("/resume/batch-download/", {
       userIds: selectedResumes
     });
 
-    const { data: urls, errorCount } = response.data;
-    totalErrorCount += errorCount;
+    const { urls } = response.data;
+    // totalErrorCount += errorCount;
 
     if (urls.length === 0) {
       throw new Error("No URLs returned from batch download request");
@@ -42,7 +42,7 @@ export async function downloadResumes(
         const fileName = cleanUpName(resume.firstName + " " + resume.lastName) + ".pdf";
         saveAs(fileResponse.data, fileName);
       } catch (error) {
-        totalErrorCount++;
+        // totalErrorCount++;
         console.error("Error downloading single resume:", error);
       }
     } else {
@@ -66,7 +66,7 @@ export async function downloadResumes(
 
           zip.file(fileName, fileResponse.data);
         } catch (error) {
-          totalErrorCount++;
+          // totalErrorCount++;
           failedDownloads.push(url);
           console.error("Error downloading resume:", url, error);
         }
@@ -91,9 +91,9 @@ export async function downloadResumes(
       }
     }
 
-    if (totalErrorCount > 0) {
-      throw new Error(`${totalErrorCount} resume(s) could not be downloaded.`);
-    }
+    // if (totalErrorCount > 0) {
+    //   throw new Error(`${totalErrorCount} resume(s) could not be downloaded.`);
+    // }
   } catch (error) {
     console.error("Error in batch download request:", error);
     throw new Error(

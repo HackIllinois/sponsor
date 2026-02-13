@@ -73,7 +73,7 @@ export function useResumeSelectionAndDownloadHook({
               resume.graduationYear || "",
               // resume.jobInterest.join("; "),
               // portfolios,
-              `${Config.RESUME_BOOK_URL}/resume-book/${resume.id}/download`
+              `${Config.RESUME_BOOK_URL}/resume-book/download/${resume.id}`
             ].map(csvEscape);
 
             return row.join(",");
