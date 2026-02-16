@@ -13,7 +13,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import {
   FaBook,
-  FaFileDownload,
+  // FaFileDownload,
   FaGraduationCap,
   FaUniversity,
   FaUser

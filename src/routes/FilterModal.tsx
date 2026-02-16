@@ -77,10 +77,11 @@ export function FilterModal(props: FilterModalProps) {
             width="100%"
             options={majors}
             selectedOptions={props.filtering.selectedMajors}
-            displayedOptions={props.filtering.majorToMajorWithCount}
+            // displayedOptions={props.filtering.majorToMajorWithCount}
             onSelectionChange={props.filtering.setSelectedMajors}
             placeholderText="Filter Major(s)"
-            hideOptionIfNoDisplayedOptionAvailable
+            baseColor="100"
+            // hideOptionIfNoDisplayedOptionAvailable
           />
           {/* <MultiSelectDropdown
             id="minor-dropdown"
@@ -97,20 +98,22 @@ export function FilterModal(props: FilterModalProps) {
             width="100%"
             options={educationLevels}
             selectedOptions={props.filtering.selectedDegrees}
-            displayedOptions={props.filtering.degreesWithCounts}
+            // displayedOptions={props.filtering.degreesWithCounts}
             onSelectionChange={props.filtering.setSelectedDegrees}
             placeholderText="Filter Degree(s)"
-            hideOptionIfNoDisplayedOptionAvailable
+            // hideOptionIfNoDisplayedOptionAvailable
+            baseColor="100"
           />
           <MultiSelectDropdown
             id="year-dropdown"
             width="100%"
             options={graduationDates}
             selectedOptions={props.filtering.selectedYears}
-            displayedOptions={props.filtering.yearsWithCounts}
+            // displayedOptions={props.filtering.yearsWithCounts}
             onSelectionChange={props.filtering.setSelectedYears}
             placeholderText="Filter Year(s)"
-            hideOptionIfNoDisplayedOptionAvailable
+            // hideOptionIfNoDisplayedOptionAvailable
+            baseColor="100"
           />
           {/* <MultiSelectDropdown
             id="job-dropdown"
