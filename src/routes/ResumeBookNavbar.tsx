@@ -24,8 +24,19 @@ export function ResumeBookNavbar({
   setShowList?: (showList: boolean) => void;
   showList?: boolean;
 }) {
-  const signOut = () => {
-    localStorage.removeItem("jwt");
+  const signOut = async () => {
+      const response = await fetch('https://adonix.hackillinois.org/auth/logout', {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error();
+      }
+
     window.location.href = "/";
   };
 

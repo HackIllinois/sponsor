@@ -25,5 +25,5 @@ export const Config = {
     "74df0fa3-f102-4e4a-90d0-74745cf52718",
     "23b61c05-ccb7-4971-bb4d-d0fc963088a6"
   ],
-  RESUME_BOOK_URL:"hackillinois.org"
+  RESUME_BOOK_URL:"sponsor.hackillinois.org"
 }

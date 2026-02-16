@@ -29,6 +29,7 @@ const TwoFactor: React.FC<TwoFactorProps> = ({ email, handleBack }) => {
     try {
       const response = await fetch('https://adonix.hackillinois.org/auth/sponsor/login', {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -42,9 +43,9 @@ const TwoFactor: React.FC<TwoFactorProps> = ({ email, handleBack }) => {
         throw new Error();
       }
  
-      const { token } = await response.json();
+      // const { token } = await response.json();
       setSuccess('Two-factor authentication successful!');
-      localStorage.setItem('jwt', token);
+      // localStorage.setItem('jwt', token);
       navigate('/resume-book');
     } catch (err) {
       setError('Invalid Code. Please try again.');

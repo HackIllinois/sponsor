@@ -3,44 +3,51 @@ import { ApiError, TypedAxiosInstance } from "./type-wrapper";
 // import Config from "./config";
 // import { authRefresh } from "./auth";
 
-const axiosObject = axios.create({ baseURL: "https://adonix.hackillinois.org" });
+// import Cookies from "js-cookie";
 
-axiosObject.interceptors.request.use((config) => {
-  const jwt = localStorage.getItem("jwt");
-  if (jwt) {
-    config.headers.Authorization = jwt;
-  } else {
-    config.headers.Authorization = undefined;
-  }
+const axiosObject = axios.create({ baseURL: "https://adonix.hackillinois.org", withCredentials:true});
 
-  return config;
-});
+// axiosObject.interceptors.request.use((config) => {
+//   const jwt = Cookies.get("jwt");
+
+//   console.log("jwt here:")
+//   console.log(jwt);
+  
+//   // localStorage.getItem("jwt");
+//   if (jwt) {
+//     config.headers.Authorization = jwt;
+//   } else {
+//     config.headers.Authorization = undefined;
+//   }
+
+//   return config;
+// });
 
 
-axiosObject.interceptors.response.use(
-  (response) => response,
-  (error: ApiError) => {
-    const errorType = error.response?.data?.error;
-    const status = error.response?.status;
+// axiosObject.interceptors.response.use(
+//   (response) => response,
+//   (error: ApiError) => {
+//     const errorType = error.response?.data?.error;
+//     const status = error.response?.status;
 
-    if (
-      status === 401 ||
-      errorType === "NoJWT" ||
-      errorType === "ExpiredJWT" ||
-      errorType === "InvalidJWT"
-    ) {
-      localStorage.removeItem("jwt");
+//     if (
+//       status === 401 ||
+//       errorType === "NoJWT" ||
+//       errorType === "ExpiredJWT" ||
+//       errorType === "InvalidJWT"
+//     ) {
+//       localStorage.removeItem("jwt");
 
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
-      }
+//       if (window.location.pathname !== "/login") {
+//         window.location.href = "/login";
+//       }
 
-      return Promise.reject(error);
-    }
+//       return Promise.reject(error);
+//     }
 
-    return Promise.reject(error);
-  }
-);
+//     return Promise.reject(error);
+//   }
+// );
 // axiosObject.interceptors.response.use(
 //   (response) => response,
 //   (error: ApiError) => {
