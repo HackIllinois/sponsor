@@ -1,5 +1,5 @@
 import { RESUMES_PER_PAGE } from "../routes/constants";
-import { Resume } from "../routes/ResumeBook";
+import { Resume, Registrant } from "../routes/ResumeBook";
 import { SingleCol } from "../routes/ResumeList";
 // import { formatMajorsMinors } from "../util/natural-stringify-list";
 import {
@@ -460,7 +460,7 @@ export function useResumeDataPaginationHook({
       )
       .then(function (response) {
         let resumes = response.data.map(
-          (registrant) =>
+          (registrant: Registrant) =>
             ({
                 email: registrant.email,
               id: registrant.userId,
@@ -480,7 +480,7 @@ export function useResumeDataPaginationHook({
         const developerResumes: Resume[] = [];
         const allResumes: Resume[] = [];
 
-        resumes.forEach((resume) => {
+        resumes.forEach((resume: Resume) => {
           if (Config.RESUMEBOOK_DEVELOPER_UIDS.includes(resume.id)) {
             developerResumes.push(resume);
           } else {

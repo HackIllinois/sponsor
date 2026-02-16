@@ -659,6 +659,11 @@ export interface APIRoutes {
       response: { url: string };
     };
   };
+  "/resume/download/:userId": {
+  GET: {
+    response: { url: string };
+  };
+};
   "/s3/download/user/:userId": {
     GET: {
       response: { url: string };

@@ -30,6 +30,17 @@ export interface Resume {
   // portfolios?: Array<string>;
 }
 
+export interface Registrant {
+  email: string,
+  userId: string,
+  firstName: string,
+  lastName: string,
+  school: string,
+  major: string,
+  education: string,
+  graduate: string,
+}
+
 export function ResumeBook() {
   const toast = useToast();
   const [showList, setShowList] = useState(true);

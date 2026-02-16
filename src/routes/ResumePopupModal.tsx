@@ -47,7 +47,7 @@ const Separator = () => (
 export const StudyInfo: React.FC<StudyInfoProps> = ({
   degree,
   graduationYear,
-  major,
+  // major,
   // minors
 }) => {
   // const hasBoth = majors.length > 0 && minors.length > 0;

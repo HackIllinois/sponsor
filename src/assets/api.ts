@@ -1,5 +1,5 @@
-import axios from "axios";
-import { ApiError, TypedAxiosInstance } from "./type-wrapper";
+import axios, { AxiosRequestConfig } from "axios";
+// import { ApiError, TypedAxiosInstance } from "./type-wrapper";
 // import Config from "./config";
 // import { authRefresh } from "./auth";
 
@@ -71,12 +71,12 @@ const axiosObject = axios.create({ baseURL: "https://adonix.hackillinois.org", w
 //   }
 // );
 
-const api: TypedAxiosInstance = {
-  get: (url, config) => axiosObject.get(url as string, config),
-  post: (url, data, config) => axiosObject.post(url as string, data, config),
-  put: (url, data, config) => axiosObject.put(url as string, data, config),
-  patch: (url, data, config) => axiosObject.patch(url as string, data, config),
-  delete: (url, config) => axiosObject.delete(url as string, config)
+const api = {
+  get: (url: string, config?: AxiosRequestConfig) => axiosObject.get(url as string, config),
+  post: (url:string, data?: any, config?: AxiosRequestConfig) => axiosObject.post(url as string, data, config),
+  put: (url: string, data?: any, config?: AxiosRequestConfig) => axiosObject.put(url as string, data, config),
+  patch: (url: string, data?: any, config?: AxiosRequestConfig) => axiosObject.patch(url as string, data, config),
+  delete: (url: string, config?: AxiosRequestConfig) => axiosObject.delete(url as string, config)
 };
 
 export default api;
