@@ -14,7 +14,8 @@ import {
   Tag,
   TagCloseButton,
   TagLabel,
-  HStack
+  HStack,
+  Portal
 } from '@chakra-ui/react';
 import { Config } from '../config';
 
@@ -131,7 +132,8 @@ function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionC
             </HStack>
           </Box>
         </PopoverTrigger>
-        <PopoverContent bgColor={bgColor} minWidth='200px' width={width} maxWidth='90vw' zIndex="30">
+        <Portal>
+        <PopoverContent bgColor={bgColor} minWidth='200px' width={width} maxWidth='90vw' zIndex="30" maxH="xl" overflowY="auto">
           <PopoverArrow />
           <PopoverBody>
             <List onMouseDown={(event) => { event.preventDefault(); }}>
@@ -144,12 +146,13 @@ function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionC
                   borderRadius="4px"
                   padding="8px"
                 >
-                  {option.toUpperCase()}
+                  {option}
                 </ListItem>
               ))}
             </List>
           </PopoverBody>
         </PopoverContent>
+        </Portal>
       </Popover>
     </FormControl>
   );

@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import "@fontsource/roboto-slab";
 import "@fontsource/nunito";
+import "@fontsource/montserrat"
 
 export function Home() {
   const [isMobile] = useMediaQuery("(max-width: 850px)");
