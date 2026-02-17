@@ -55,12 +55,13 @@ export function ResumeBookNavbar({
     >
       <HStack spacing={8} alignItems={"center"}>
         <Flex align="center" mr={2}>
-          <Image src="/hackillinois-logo.svg" minHeight={30} maxH="100%" />
+          <Image src="/hackillinois-logo.svg" height={10} />
         </Flex>
       </HStack>
       <Text
         color="gray.800"
-        fontFamily={"Roboto Slab"}
+        fontFamily={"Montserrat"}
+        fontWeight={500}
         fontSize="2xl"
         display={{
           base: "none",
@@ -72,6 +73,7 @@ export function ResumeBookNavbar({
       <Text
         color="gray.600"
         fontSize="24px"
+        fontFamily={"Montserrat"}
         textAlign="center"
         ml={{
           base: "0",
