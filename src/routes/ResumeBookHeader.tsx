@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { BiSelectMultiple } from "react-icons/bi";
 import { FaDownload } from "react-icons/fa";
-import { FaFileCsv, FaRegFilePdf } from "react-icons/fa6";
+import { FaFileCsv, FaRegFilePdf, FaFileDownload } from "react-icons/fa";
 import { TiDocumentDelete } from "react-icons/ti";
 import { FilterModal, FilterModalProps } from "./FilterModal";
 import { Resume } from "./ResumeBook";
@@ -47,7 +47,12 @@ export type ResumeBookHeaderProps = {
   };
   exportResumes: {
     handleDownloadResumes: () => void;
+    downloadAllResumes: () => void;
     downloadResumesCSV: (selectedOnly: boolean) => void;
+    
+    isDownloading: boolean;
+  progress: number;
+  total: number;
   };
   viewColor: string;
   isMediumScreen: boolean;
@@ -231,6 +236,35 @@ export function ResumeBookHeader({
               </Button>
             </PopoverContent>
           </Popover>
+           <Button
+                onClick={() => void exportResumes.downloadAllResumes()}
+                isLoading={exportResumes.isDownloading}
+                loadingText={
+                  !isMediumScreen ? (
+                    <>
+                      {` ${exportResumes.progress}/${exportResumes.total}`}
+                    </>
+                  ) : (
+                    `Downloading ${exportResumes.progress}/${exportResumes.total}`
+                  )
+                }
+                border="1px solid transparent"
+                _hover={{
+                  border: "1px solid black",
+                  backgroundColor: "green.300",
+                  color: "black"
+                }}
+                backgroundColor={
+                  parseInt(viewColor) < 500
+                    ? "green." + (parseInt(viewColor) + 300)
+                    : "green." + (parseInt(viewColor) - 200)
+                }
+                color={"white"}
+                transition="border background-color color 0.3s ease"
+                leftIcon={isMediumScreen ? <FaFileDownload /> : undefined}
+              >
+                {!isMediumScreen ? <FaFileDownload /> : "Download All"}
+              </Button>
         </Flex>
       </Flex>
     </Box>
