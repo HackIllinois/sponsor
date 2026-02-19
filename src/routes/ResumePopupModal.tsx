@@ -174,8 +174,10 @@ const ResumePopupModal = ({
     }
 
     try {
+      const response = await api.get(path("/resume/download/:userId", {userId: resume.id}));
+      const freshURL = response.data.url;
       // Fetch the file as a blob
-      const fileResponse = await axios.get<unknown, { data: Blob }>(resumeUrl, {
+      const fileResponse = await axios.get<unknown, { data: Blob }>(freshURL, {
         responseType: "blob"
       });
 

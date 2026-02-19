@@ -1,17 +1,21 @@
 import { Config } from "../config";
 import { Resume } from "../routes/ResumeBook";
-import { downloadResumes } from "../util/download-functions";
+import { downloadResumes, downloadAllResumesHandler } from "../util/download-functions";
 import { saveAs } from "file-saver";
 import { useState } from "react";
+import { useToast } from "@chakra-ui/react";
 
 export function useResumeSelectionAndDownloadHook({
   allFilteredResumes,
-  filteredResumes
+  filteredResumes,
+  allResumes
 }: {
   allFilteredResumes: Resume[];
   filteredResumes: Resume[];
+  allResumes: Resume[];
 }) {
   const [selectedResumes, setSelectedResumes] = useState<string[]>([]);
+  const toast = useToast();
 
   const resetSelectedResumes = () => {
     setSelectedResumes([]);
@@ -44,6 +48,40 @@ export function useResumeSelectionAndDownloadHook({
   const handleDownloadResumes = async () => {
     await downloadResumes(filteredResumes, selectedResumes);
   };
+
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [total, setTotal] = useState(0);
+
+//   const downloadAllResumes = async () => {
+//     const allIds = allResumes.map(r => r.id);
+//   await downloadAllResumesHandler(allResumes, allIds);
+// };
+
+const downloadAllResumes = async () => {
+  setIsDownloading(true);
+  setProgress(0);
+  const allIds = allResumes.map(r => r.id);
+  setTotal(allIds.length);
+
+  const {succeeded, failed} = await downloadAllResumesHandler(
+    allResumes,
+    allIds,
+    (completed) => {
+      setProgress(completed);
+    }
+  );
+
+  toast({
+  title: "Resume download finished",
+  description: `${succeeded} succeeded, ${failed} failed`,
+  status: failed > 0 ? "warning" : "success",
+  duration: 5000,
+  isClosable: true
+});
+
+  setIsDownloading(false);
+};
 
   const downloadResumesCSV = (selected: boolean = false) => {
     const csvContent = [
@@ -106,6 +144,10 @@ export function useResumeSelectionAndDownloadHook({
     selectAllResumes,
     handleDownloadResumes,
     downloadResumesCSV,
-    resetSelectedResumes
+    resetSelectedResumes,
+    downloadAllResumes,
+    isDownloading,
+    progress,
+    total
   };
 }

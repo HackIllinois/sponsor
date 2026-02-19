@@ -102,6 +102,112 @@ export async function downloadResumes(
   }
 }
 
+
+
+export async function downloadAllResumesHandler(
+  resumes: Resume[],
+  selectedResumes: string[],
+  onProgress?: (completed: number) => void
+) {
+
+  try {
+      let completed = 0;
+      const zip = new JSZip();
+      const failedDownloads: { url: any; reason: any; }[] = [];
+
+      const fetchOne = async (url: string) => {
+      const userId = getFileNameFromUrl(url).replace(".pdf", "");
+      const resume = resumes.find((r) => r.id === userId);
+      const fileName = resume
+        ? cleanUpName(`${resume.firstName} ${resume.lastName}`) + ".pdf"
+        : `${userId}.pdf`;
+
+        try {
+          const fileResponse = await axios.get<unknown, { data: Blob }>(url, {
+            responseType: "blob"
+          });
+          zip.file(fileName, fileResponse.data);
+        } finally {
+          completed++;
+        onProgress?.(completed);
+        }
+
+    };
+
+    const CONCURRENCY = 20;
+    const BATCH_NUM = 200;
+
+
+    for(let start = 0; start < selectedResumes.length; start += BATCH_NUM) {
+      const idBatch = selectedResumes.slice(start, start + BATCH_NUM);
+
+
+
+      const response = await api.post("/resume/batch-download/", {
+        userIds: idBatch
+      });
+
+      // console.log(start + " batch has started")
+
+      const { urls } = response.data
+
+    
+    // const response = await api.post("/resume/batch-download/", {
+    //       userIds: selectedResumes
+    //     });
+    // const { urls } = response.data;
+
+    if (urls.length === 0) {
+      // throw new Error("No URLs returned from batch download request");
+      console.warn("No urls for batch starting at", start);
+      continue;
+    }
+
+       for (let i = 0; i < urls.length; i += CONCURRENCY) {
+      const batch = urls.slice(i, i + CONCURRENCY);
+
+      const results = await Promise.allSettled(batch.map((url: string) => fetchOne(url)));
+
+      results.forEach((res, idx) => {
+        if (res.status === "rejected") {
+          failedDownloads.push({ url: batch[idx]!, reason: res.reason });
+          console.error("Error downloading resume:", batch[idx], res.reason);
+        }
+      });
+    }
+
+}
+      if (Object.keys(zip.files).length > 0) {
+        try {
+          const content = await zip.generateAsync({ type: "blob" });
+          saveAs(content, "resumes.zip");
+        } catch (error) {
+          console.error("Error generating zip file:", error);
+          throw new Error(
+            "Failed to create zip file. Some resumes may not have been downloaded."
+          );
+        }
+      } else {
+        throw new Error("No resumes were successfully downloaded.");
+      }
+
+      if (failedDownloads.length > 0) {
+        console.log("Failed downloads:", failedDownloads);
+      }
+      const succeeded = Object.keys(zip.files).length;
+      const failed = failedDownloads.length;
+      return { succeeded, failed};
+  } catch (error) {
+    console.error("Error in batch download request:", error);
+    throw new Error(
+      "Failed to initiate resume download(s). Please try again later."
+    );
+  }
+}
+
+
+
+
 const getFileNameFromUrl = (url: string): string => {
   const parts = url.split("/");
   const temp = parts[parts.length - 1];

@@ -172,6 +172,11 @@ export function useResumeDataPaginationHook({
             | null
             | undefined = b[filterBy.sortCol as keyof Resume];
 
+          if(filterBy.sortCol === "name") {
+            aValue = `${a.firstName} ${a.lastName}`;
+            bValue = `${b.firstName} ${b.lastName}`;
+          }
+
           if (filterBy.sortCol === "graduationYear") {
             aValue = moment(aValue as string);
             bValue = moment(bValue as string);
@@ -532,7 +537,8 @@ export function useResumeDataPaginationHook({
 
   const resumeSelectionAndDownloadHook = useResumeSelectionAndDownloadHook({
     allFilteredResumes,
-    filteredResumes
+    filteredResumes,
+    allResumes: resumes
   });
 
   return {
@@ -587,7 +593,14 @@ export function useResumeDataPaginationHook({
     exportResumes: {
       handleDownloadResumes:
         resumeSelectionAndDownloadHook.handleDownloadResumes,
-      downloadResumesCSV: resumeSelectionAndDownloadHook.downloadResumesCSV
+      downloadResumesCSV: resumeSelectionAndDownloadHook.downloadResumesCSV,
+      downloadAllResumes: 
+        resumeSelectionAndDownloadHook.downloadAllResumes,
+
+        
+      isDownloading: resumeSelectionAndDownloadHook.isDownloading,
+  progress: resumeSelectionAndDownloadHook.progress,
+  total: resumeSelectionAndDownloadHook.total,
     }
   };
 }
