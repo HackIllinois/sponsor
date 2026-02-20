@@ -463,7 +463,6 @@ export function useResumeDataPaginationHook({
         // }
       )
       .then(function (response) {
-        console.log(response.data)
         let resumes = response.data.map(
           (registrant: Registrant) =>
             ({
