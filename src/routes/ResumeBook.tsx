@@ -26,6 +26,7 @@ export interface Resume {
   // minors: string[];
   degree?: string;
   graduationYear: string | null;
+  title?: string;
   // jobInterest: Array<string>;
   // portfolios?: Array<string>;
 }
@@ -39,6 +40,7 @@ export interface Registrant {
   major: string,
   education: string,
   graduate: string,
+  title?: string;
 }
 
 export function ResumeBook() {

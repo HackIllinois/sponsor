@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react";
 import { FaFilePdf } from "react-icons/fa6";
 // import PortfolioLinks from "../components/PortfolioLinks";
-import { Config } from "../config";
 import { Resume } from "./ResumeBook";
 
 interface MajorsMinorsListProps {
@@ -122,9 +121,9 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
     >
       <VStack alignItems={"flex-start"} mb={"auto"}>
         <Flex w="100%" alignItems={"center"} flexWrap="wrap" gap={2}>
-          {Config.STAFF_UIDs.includes(resume.id) && (
-            <Tooltip label="Staff Member" fontSize="md">
-              <Image src="/rp_logo.svg" width="16px" height="16px" />
+          {resume.title && (
+            <Tooltip label={resume.title} fontSize="md">
+              <Image src="/hackillinois-logo.svg" width="16px" height="16px" />
             </Tooltip>
           )}
           <Text fontWeight="bold" fontSize="lg" maxW={"70%"} my={0}>

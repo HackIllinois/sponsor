@@ -13,7 +13,6 @@ import {
 import React from "react";
 import { FaFilePdf } from "react-icons/fa6";
 // import PortfolioLinks from "../components/PortfolioLink";
-import { Config } from "../config";
 import { Resume } from "./ResumeBook";
 
 interface ResumeComponentProps {
@@ -76,8 +75,8 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
               onChange={() => toggleResume(resume.id)}
               borderColor={"gray.400"}
             />
-            {Config.STAFF_UIDs.includes(resume.id) && (
-              <Tooltip label="Staff Member" fontSize="md">
+            {resume.title && (
+              <Tooltip label={resume.title} fontSize="md">
                 <Image
                   src="/hackillinois-logo.svg"
                   width="20px"
