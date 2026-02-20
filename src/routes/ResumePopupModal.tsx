@@ -1,4 +1,3 @@
-import { Config } from "../config";
 import {
   Box,
   Button,
@@ -224,10 +223,10 @@ const ResumePopupModal = ({
                       <Text fontSize="2xl" fontWeight="bold">
                         {resume.firstName + " " + resume.lastName} 
                       </Text>
-                      {Config.STAFF_UIDs.includes(resume.id) && (
-                        <Tooltip label="Staff Member" fontSize="md">
+                      {resume.title && (
+                        <Tooltip label={resume.title} fontSize="md">
                           <Image
-                            src="/rp_logo.svg"
+                            src="/hackillinois-logo.svg"
                             width="20px"
                             height="20px"
                             opacity={0.8}
