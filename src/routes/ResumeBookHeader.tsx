@@ -26,6 +26,7 @@ export type ResumeBookHeaderProps = {
     degreesWithCounts: Record<string, string>;
     yearsWithCounts: Record<string, string>;
     selectedYears: string[];
+    selectedTracks: string[];
     // jobInterestsWithCounts: Record<string, string>;
     // selectedJobInterests: string[];
     setQueryName: (name: string) => void;
@@ -33,6 +34,7 @@ export type ResumeBookHeaderProps = {
     // setSelectedMinors: (minors: string[]) => void;
     setSelectedDegrees: (degrees: string[]) => void;
     setSelectedYears: (years: string[]) => void;
+    setSelectedTracks: (tracks: string[]) => void;
     // setSelectedJobInterests: (jobs: string[]) => void;
   };
   pagination: {

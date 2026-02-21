@@ -27,4 +27,5 @@ export { educationLevels } from "./assets/education-levels";
 // export { circleColors } from "./assets/event-circle-colors";
 // export { dayColors } from "./assets/event-day-colors";
 export { default as api } from "./assets/api";
+export { trackOptions } from "./assets/tracks"
 // export * from "./util";

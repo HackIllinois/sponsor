@@ -10,6 +10,7 @@ import {
   educationLevels,
   graduationDates,
   majors,
+  trackOptions
   // minors,
   // employmentOpportunities
 } from "../index";
@@ -32,6 +33,8 @@ export type FilterModalProps = {
     // setSelectedMinors: (minors: string[]) => void;
     setSelectedDegrees: (degrees: string[]) => void;
     setSelectedYears: (years: string[]) => void;
+    selectedTracks: string[];
+    setSelectedTracks: (tracks: string[]) => void;
     // setSelectedJobInterests: (jobInterests: string[]) => void;
   };
 };
@@ -42,6 +45,7 @@ export function FilterModal(props: FilterModalProps) {
     // props.filtering.setSelectedMinors([]);
     props.filtering.setSelectedDegrees([]);
     props.filtering.setSelectedYears([]);
+    props.filtering.setSelectedTracks([]);
     // props.filtering.setSelectedJobInterests([]);
   };
 
@@ -49,7 +53,8 @@ export function FilterModal(props: FilterModalProps) {
     props.filtering.selectedMajors.length > 0 ||
     // props.filtering.selectedMinors.length > 0 ||
     props.filtering.selectedDegrees.length > 0 ||
-    props.filtering.selectedYears.length > 0 
+    props.filtering.selectedYears.length > 0 ||
+    props.filtering.selectedTracks.length > 0
     // || props.filtering.selectedJobInterests.length > 0;
   return (
     <Popover>
@@ -112,6 +117,17 @@ export function FilterModal(props: FilterModalProps) {
             // displayedOptions={props.filtering.yearsWithCounts}
             onSelectionChange={props.filtering.setSelectedYears}
             placeholderText="Filter Year(s)"
+            // hideOptionIfNoDisplayedOptionAvailable
+            baseColor="100"
+          />
+          <MultiSelectDropdown
+            id="track-dropdown"
+            width="100%"
+            options={trackOptions}
+            selectedOptions={props.filtering.selectedTracks}
+            // displayedOptions={props.filtering.yearsWithCounts}
+            onSelectionChange={props.filtering.setSelectedTracks}
+            placeholderText="Filter Track(s)"
             // hideOptionIfNoDisplayedOptionAvailable
             baseColor="100"
           />

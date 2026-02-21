@@ -126,6 +126,11 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
               <Image src="/hackillinois-logo.svg" width="16px" height="16px" />
             </Tooltip>
           )}
+          {resume.pro && (
+            <Tooltip label="HackVoyager" fontSize="md">
+              <Image src="/hackvoyager.svg" width="22px" height="22px" />
+            </Tooltip>
+          )}
           <Text fontWeight="bold" fontSize="lg" maxW={"70%"} my={0}>
             {/* {resume.name} */}
             {`${resume.firstName ?? ""} ${resume.lastName ?? ""}`}
