@@ -29,6 +29,7 @@ export function useResumeDataPaginationHook({
 //   const [selectedMinors, setSelectedMinors] = useState<string[]>([]);
   const [selectedDegrees, setSelectedDegrees] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
+  const [selectedTracks, setSelectedTracks] = useState<string[]>([]);
 //   const [selectedJobInterests, setSelectedJobInterests] = useState<string[]>(
 //     []
 //   );
@@ -58,6 +59,7 @@ export function useResumeDataPaginationHook({
     // minor: boolean;
     degree: boolean;
     graduationYear: boolean;
+    track: boolean;
     // jobInterest: boolean;
     filterName?: string;
     sortCol?: SingleCol;
@@ -74,6 +76,9 @@ export function useResumeDataPaginationHook({
     );
     const lowerCasedSelectedYears = new Set(
       selectedYears.map((year) => year.toLowerCase())
+    );
+    const lowerCasedSelectedTracks = new Set(
+      selectedTracks.map((track) => track.toLowerCase())
     );
     // const lowerCasedSelectedJobInterests = new Set(
     //   selectedJobInterests.map((jobInterest) => jobInterest.toLowerCase())
@@ -130,6 +135,14 @@ export function useResumeDataPaginationHook({
           (resume.graduationYear &&
             lowerCasedSelectedYears.has(resume.graduationYear.toLowerCase()));
 
+        const matchesTrack =
+          selectedTracks.length === 0 ||
+          (resume.pro && (
+            lowerCasedSelectedTracks.has("hackvoyager")
+          )) ||
+          (!resume.pro &&
+            lowerCasedSelectedTracks.has("general attendee"));
+
         // const matchesJobInterest =
         //   selectedJobInterests.length === 0 ||
         //   (resume.jobInterest &&
@@ -141,6 +154,7 @@ export function useResumeDataPaginationHook({
           majorOrMinorMatch &&
           (matchesDegree || !filterBy.degree) &&
           (matchesYear || !filterBy.graduationYear) &&
+          (matchesTrack || !filterBy.track) &&
         //   (matchesJobInterest || !filterBy.jobInterest) &&
         //   (filterBy.filterName
         //     ? resume.name
@@ -162,6 +176,7 @@ export function useResumeDataPaginationHook({
             | string[]
             | number
             | null
+            | boolean
             | undefined = a[filterBy.sortCol as keyof Resume];
           let bValue:
             | moment.Moment
@@ -169,6 +184,7 @@ export function useResumeDataPaginationHook({
             | string[]
             | number
             | null
+            | boolean
             | undefined = b[filterBy.sortCol as keyof Resume];
 
           if(filterBy.sortCol === "name") {
@@ -220,6 +236,7 @@ export function useResumeDataPaginationHook({
     //   minor: true,
       degree: true,
       graduationYear: true,
+      track: true,
     //   jobInterest: true,
       sortCol: sortByColumn,
       sortDirection: sortDirection,
@@ -231,6 +248,7 @@ export function useResumeDataPaginationHook({
     // selectedMinors,
     selectedDegrees,
     selectedYears,
+    selectedTracks,
     // selectedJobInterests,
     sortByColumn,
     sortDirection,
@@ -243,6 +261,7 @@ export function useResumeDataPaginationHook({
     //   minor: false,
       degree: true,
       graduationYear: true,
+      track: true,
     //   jobInterest: true
     });
 
@@ -317,6 +336,7 @@ export function useResumeDataPaginationHook({
     //   minor: true,
       degree: false,
       graduationYear: true,
+      track: true,
     //   jobInterest: true
     });
 
@@ -350,6 +370,7 @@ export function useResumeDataPaginationHook({
     //   minor: true,
       degree: true,
       graduationYear: false,
+      track: true,
     //   jobInterest: true
     });
 
@@ -476,7 +497,8 @@ export function useResumeDataPaginationHook({
             //   minors: registrant.minors,
               degree: registrant.education,
               graduationYear: registrant.graduate,
-              title: registrant.title
+              title: registrant.title,
+              pro: registrant.pro
             //   jobInterest: registrant.opportunities,
             //   portfolios: registrant.personalLinks
             }) as Resume
@@ -526,6 +548,7 @@ export function useResumeDataPaginationHook({
     // selectedMinors,
     selectedDegrees,
     selectedYears,
+    selectedTracks,
     // selectedJobInterests
   ]);
 
@@ -572,6 +595,7 @@ export function useResumeDataPaginationHook({
     //   selectedMinors,
       selectedYears,
       selectedDegrees,
+      selectedTracks,
       majorToMajorWithCount,
     //   minorToMinorWithCount,
       degreesWithCounts,
@@ -583,6 +607,7 @@ export function useResumeDataPaginationHook({
     //   setSelectedMinors,
       setSelectedDegrees,
       setSelectedYears,
+      setSelectedTracks,
     //   setSelectedJobInterests
     },
     selection: {

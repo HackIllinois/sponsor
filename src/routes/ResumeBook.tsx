@@ -27,6 +27,7 @@ export interface Resume {
   degree?: string;
   graduationYear: string | null;
   title?: string;
+  pro?: boolean;
   // jobInterest: Array<string>;
   // portfolios?: Array<string>;
 }
@@ -41,6 +42,7 @@ export interface Registrant {
   education: string,
   graduate: string,
   title?: string;
+  pro?: boolean;
 }
 
 export function ResumeBook() {

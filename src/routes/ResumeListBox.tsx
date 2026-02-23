@@ -85,6 +85,11 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
                 />
               </Tooltip>
             )}
+            {resume.pro && (
+            <Tooltip label="HackVoyager" fontSize="md">
+              <Image src="/hackvoyager.svg" width="22px" height="22px" />
+            </Tooltip>
+          )}
           </HStack>
         </GridItem>
         {screenIsLarge ? (

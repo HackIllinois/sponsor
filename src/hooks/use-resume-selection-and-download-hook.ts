@@ -85,7 +85,7 @@ const downloadAllResumes = async () => {
 
   const downloadResumesCSV = (selected: boolean = false) => {
     const csvContent = [
-      "First Name,Last Name,Major,Degree,Graduation Year,Resume Link"
+      "First Name,Last Name,Major,Degree,Graduation Year,Track,Resume Link"
     ]
       .concat(
         allFilteredResumes
@@ -111,6 +111,7 @@ const downloadAllResumes = async () => {
               resume.graduationYear || "",
               // resume.jobInterest.join("; "),
               // portfolios,
+              resume.title ? "Staff" : (resume.pro ? "HackVoyager" : "General Attendee"),
               `${Config.RESUME_BOOK_URL}/resume-book/download/${resume.id}`
             ].map(csvEscape);
 
