@@ -96,17 +96,6 @@ export function Home() {
             >
               <Text fontSize={isSmall ? "22" : "30"}>Sponsorship Packet</Text>
             </Button>
-            <Text
-              as="a"
-              href="/sponsors.png"
-              fontSize={isSmall ? "14" : "16"}
-              color="#68C8BF"
-              mt="4px"
-              alignSelf="center"
-              _hover={{ textDecoration: "underline", color: "#fba036" }}
-            >
-              View as PNG
-            </Text>
           </VStack>
           <Button
             w={isMobile ? "300px" : "450px"}
