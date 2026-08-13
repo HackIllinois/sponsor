@@ -91,8 +91,8 @@ export function Home() {
               zIndex={"1"}
               borderRadius={"2rem"}
               _hover={{ bg: "#68C8BF" }}
-              as="a"
-              href="/sponsors.pdf"
+              isDisabled
+              _disabled={{ opacity: 0.5, cursor: "not-allowed" }}
             >
               <Text fontSize={isSmall ? "22" : "30"}>Sponsorship Packet</Text>
             </Button>
