@@ -8,7 +8,6 @@ import {
   Button,
   useMediaQuery,
   Image,
-  VStack,
 } from "@chakra-ui/react";
 import "@fontsource/roboto-slab";
 import "@fontsource/nunito";
@@ -84,19 +83,6 @@ export function Home() {
           justifyItems={"left"}
           mt="10px"
         >
-          <VStack gap={0}>
-            <Button
-              w={isMobile ? "300px" : "450px"}
-              h={isMobile ? "75px" : "125px"}
-              zIndex={"1"}
-              borderRadius={"2rem"}
-              _hover={{ bg: "#68C8BF" }}
-              isDisabled
-              _disabled={{ opacity: 0.5, cursor: "not-allowed" }}
-            >
-              <Text fontSize={isSmall ? "22" : "30"}>Sponsorship Packet</Text>
-            </Button>
-          </VStack>
           <Button
             w={isMobile ? "300px" : "450px"}
             h={isMobile ? "75px" : "125px"}
